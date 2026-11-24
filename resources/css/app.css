@@ -113,38 +113,49 @@
   }
 
   .site-header__inner {
-    @apply container-site flex items-center justify-between gap-6 py-2.5 md:py-3.5;
+    @apply container-site grid h-[72px] grid-cols-[1fr_auto_1fr] items-center gap-4 lg:h-[76px] lg:gap-6 xl:gap-8;
   }
 
-  .site-header__logo img {
-    @apply h-11 w-auto md:h-16;
+  /* The logo plaque hangs below the bar on larger screens. */
+  .site-header__logo {
+    @apply relative z-50 flex self-start justify-self-center no-underline;
+  }
+
+  .site-header__plaque {
+    @apply flex items-center justify-center bg-ink px-3 pt-2 pb-2 lg:rounded-b-2xl lg:px-8 lg:pt-4 lg:pb-5 lg:shadow-[0_14px_30px_rgba(0,0,0,0.35)];
+  }
+
+  .site-header__plaque img {
+    @apply h-14 w-auto sm:h-16 lg:h-[104px] xl:h-[124px];
   }
 
   /* Logo: swings like a hanging pub sign on hover/focus. */
-  .sign-swing img {
+  .sign-swing > * {
     transform-origin: 50% 0;
   }
 
-  .sign-swing:hover img,
-  .sign-swing:focus-visible img {
+  .sign-swing:hover > *,
+  .sign-swing:focus-visible > * {
     animation: sign-swing 1.4s cubic-bezier(0.36, 0, 0.3, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sign-swing:hover img,
-    .sign-swing:focus-visible img {
+    .sign-swing:hover > *,
+    .sign-swing:focus-visible > * {
       animation: none;
     }
   }
 
   .primary-nav ul {
-    @apply m-0 hidden list-none items-center gap-8 p-0 lg:flex;
+    @apply m-0 hidden list-none items-center gap-5 p-0 lg:flex xl:gap-8;
   }
 
   .primary-nav a,
   .mobile-nav a {
-    @apply font-display text-[22px] font-extrabold tracking-[0.04em] text-paper uppercase no-underline;
+    @apply font-display text-[22px] font-extrabold tracking-[0.04em] whitespace-nowrap text-paper uppercase no-underline;
   }
+
+  .primary-nav a { @apply text-[19px] xl:text-[22px]; }
 
   .primary-nav a:hover { @apply text-blush; }
 
@@ -154,7 +165,7 @@
   }
 
   .header-cta {
-    @apply hidden min-h-0 px-5 py-2.5 font-display text-[20px] font-extrabold tracking-[0.04em] uppercase lg:inline-flex;
+    @apply hidden min-h-0 px-4 py-2.5 font-display text-[18px] font-extrabold tracking-[0.04em] whitespace-nowrap uppercase lg:inline-flex xl:px-5 xl:text-[20px];
   }
 
   .menu-toggle {
@@ -196,7 +207,7 @@
   }
 
   .page-band__inner {
-    @apply container-site flex flex-wrap items-end justify-between gap-6 pt-12 md:pt-16;
+    @apply container-site flex flex-wrap items-end justify-between gap-6 pt-12 md:pt-16 lg:pt-32;
   }
 
   .page-band h1 {

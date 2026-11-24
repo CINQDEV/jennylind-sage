@@ -123,3 +123,27 @@ function booking_form(): string
         esc_url(home_url('/stay/reservations/'))
     ));
 }
+
+/**
+ * Top-level items of a menu location, with WordPress's "current" detection,
+ * so the header can split the menu either side of the logo.
+ *
+ * @return array<int, array{title: string, url: string, current: bool}>
+ */
+function menu_items(string $location): array
+{
+    $locations = get_nav_menu_locations();
+    $items = isset($locations[$location]) ? wp_get_nav_menu_items($locations[$location]) : [];
+
+    if (! $items) {
+        return [];
+    }
+
+    _wp_menu_item_classes_by_context($items);
+
+    return array_values(array_map(fn ($item) => [
+        'title' => $item->title,
+        'url' => $item->url,
+        'current' => (bool) array_intersect(['current-menu-item', 'current-menu-ancestor', 'current_page_item'], (array) $item->classes),
+    ], array_filter($items, fn ($item) => ! $item->menu_item_parent)));
+}

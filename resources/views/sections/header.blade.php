@@ -1,15 +1,35 @@
+@php
+  $items = App\menu_items('primary_navigation');
+  $half = (int) ceil(count($items) / 2);
+  $left = array_slice($items, 0, $half);
+  $right = array_slice($items, $half);
+@endphp
+
+{{-- Centred logo on a plaque that hangs below the bar, like a pub sign. --}}
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-header__logo sign-swing flex" href="{{ home_url('/') }}" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
-      <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="{{ $siteName }}" width="146" height="64">
+    <nav class="primary-nav justify-self-start" aria-label="{{ __('Main', 'jennylind') }}">
+      <ul>
+        @foreach ($left as $item)
+          <li @class(['current-menu-item' => $item['current']])><a href="{{ $item['url'] }}" @if ($item['current']) aria-current="page" @endif>{{ $item['title'] }}</a></li>
+        @endforeach
+      </ul>
+    </nav>
+
+    <a class="site-header__logo sign-swing" href="{{ home_url('/') }}" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
+      <span class="site-header__plaque">
+        <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="{{ $siteName }}" width="273" height="120">
+      </span>
     </a>
 
-    <div class="flex items-center gap-8">
-      @if (has_nav_menu('primary_navigation'))
-        <nav class="primary-nav" aria-label="{{ __('Main', 'jennylind') }}">
-          {!! wp_nav_menu(['theme_location' => 'primary_navigation', 'container' => false, 'menu_class' => 'menu', 'echo' => false]) !!}
-        </nav>
-      @endif
+    <div class="flex items-center justify-self-end gap-5 xl:gap-8">
+      <nav class="primary-nav" aria-label="{{ __('Main, continued', 'jennylind') }}">
+        <ul>
+          @foreach ($right as $item)
+            <li @class(['current-menu-item' => $item['current']])><a href="{{ $item['url'] }}" @if ($item['current']) aria-current="page" @endif>{{ $item['title'] }}</a></li>
+          @endforeach
+        </ul>
+      </nav>
 
       <a class="btn btn-accent header-cta" href="{{ home_url('/stay/#book') }}">{{ __('Book a room', 'jennylind') }}</a>
 
@@ -19,9 +39,14 @@
     </div>
   </div>
 
-  @if (has_nav_menu('primary_navigation'))
+  @if ($items)
     <nav id="mobile-nav" class="mobile-nav" data-mobile-nav aria-label="{{ __('Mobile', 'jennylind') }}">
-      {!! wp_nav_menu(['theme_location' => 'primary_navigation', 'container' => false, 'menu_class' => 'menu', 'echo' => false]) !!}
+      <ul>
+        @foreach ($items as $item)
+          <li><a href="{{ $item['url'] }}" @if ($item['current']) aria-current="page" @endif>{{ $item['title'] }}</a></li>
+        @endforeach
+        <li><a href="{{ home_url('/stay/#book') }}">{{ __('Book a room', 'jennylind') }}</a></li>
+      </ul>
     </nav>
   @endif
 </header>

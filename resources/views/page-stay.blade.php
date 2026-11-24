@@ -18,7 +18,7 @@
   <section class="page-band">
     @include('partials.band-image', ['src' => $heroImage])
     <div class="page-band__shade relative">
-      <div class="container-site flex flex-wrap items-center justify-between gap-12 py-12 md:py-[88px]">
+      <div class="container-site flex flex-wrap items-center justify-between gap-12 py-12 md:py-[88px] lg:pt-32">
         <div class="max-w-[620px] flex-[1_1_520px]">
           <p class="eyebrow eyebrow--light mb-3.5">{{ __('Stay at the Jenny', 'jennylind') }}</p>
           <h1 class="m-0 text-[52px] md:text-[96px]" style="line-height: 0.9">Rooms in the heart of the Old Town</h1>
