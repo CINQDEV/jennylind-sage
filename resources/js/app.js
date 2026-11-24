@@ -60,3 +60,63 @@ if (header) {
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 }
+
+/**
+ * The Jenny Sessions: click-to-play players, pop-up player, style filter.
+ */
+const iframeFor = (embed, title) => {
+  const frame = document.createElement('iframe');
+  frame.src = embed;
+  frame.title = title || 'Video';
+  frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  frame.allowFullscreen = true;
+  frame.referrerPolicy = 'strict-origin-when-cross-origin';
+  return frame;
+};
+
+document.querySelectorAll('[data-player]').forEach((player) => {
+  player.querySelector('button')?.addEventListener('click', () => {
+    const frame = iframeFor(player.dataset.embed, player.dataset.title);
+    player.replaceChildren(frame);
+    frame.focus();
+  });
+});
+
+const modal = document.querySelector('[data-session-modal]');
+
+if (modal) {
+  const frameBox = modal.querySelector('[data-session-modal-frame]');
+  const close = () => modal.close();
+
+  modal.addEventListener('close', () => frameBox.replaceChildren());
+  modal.querySelector('[data-session-close]')?.addEventListener('click', close);
+  // Click on the dark backdrop closes it.
+  modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
+
+  document.querySelectorAll('[data-session-open]').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+      event.preventDefault();
+      modal.querySelector('[data-session-modal-title]').textContent = card.dataset.title;
+      modal.querySelector('[data-session-modal-page]').href = card.dataset.page;
+      frameBox.replaceChildren(iframeFor(card.dataset.embed, card.dataset.title));
+      modal.showModal();
+    });
+  });
+}
+
+const filters = document.querySelector('[data-session-filters]');
+
+filters?.addEventListener('click', (event) => {
+  const chip = event.target.closest('[data-filter]');
+  if (!chip) return;
+
+  filters.querySelectorAll('[data-filter]').forEach((c) => {
+    c.classList.toggle('is-active', c === chip);
+    c.setAttribute('aria-pressed', c === chip ? 'true' : 'false');
+  });
+
+  document.querySelectorAll('[data-session-grid] .session-card').forEach((card) => {
+    card.hidden = chip.dataset.filter !== '' && !card.dataset.styles.split(' ').includes(chip.dataset.filter);
+  });
+});

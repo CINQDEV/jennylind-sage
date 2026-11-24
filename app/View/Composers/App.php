@@ -64,7 +64,10 @@ class App extends Composer
     {
         $id = null;
 
-        if (is_singular()) {
+        if (is_singular('jl_session')) {
+            // A session's band uses the Sessions page photo, not the video still.
+            $id = get_page_by_path(\App\SESSIONS_PAGE)?->ID;
+        } elseif (is_singular()) {
             $id = get_queried_object_id();
         } elseif (is_home()) {
             $id = (int) get_option('page_for_posts');

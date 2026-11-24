@@ -22,6 +22,16 @@
         <div class="entry-content">
           @php(the_content())
         </div>
+
+        @if ($session = App\session_for_event(get_the_ID()))
+          <div class="mt-10">
+            <p class="eyebrow mb-2">{{ __('The Jenny Sessions', 'jennylind') }}</p>
+            <h2 class="mt-0 mb-4 text-[36px] md:text-[44px]">{{ __('Watch the session', 'jennylind') }}</h2>
+            <div class="overflow-hidden rounded-lg">
+              @include('partials.sessions.player', ['s' => $session])
+            </div>
+          </div>
+        @endif
       </article>
 
       <aside class="lg:w-[32%]">
