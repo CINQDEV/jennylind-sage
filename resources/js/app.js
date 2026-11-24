@@ -31,3 +31,21 @@ loadMore?.addEventListener('click', () => {
     loadMore.remove();
   }
 });
+
+/**
+ * Copy-to-clipboard buttons (e.g. the calendar feed link).
+ */
+document.querySelectorAll('[data-copy]').forEach((button) => {
+  const label = button.textContent;
+
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(button.dataset.copy);
+      button.textContent = button.dataset.copiedText || 'Copied';
+    } catch {
+      window.prompt('Copy this link:', button.dataset.copy);
+      return;
+    }
+    setTimeout(() => { button.textContent = label; }, 2500);
+  });
+});

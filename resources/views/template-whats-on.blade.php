@@ -60,6 +60,8 @@
         </div>
       @endif
 
+      @include('partials.events.calendar')
+
       <div class="flex flex-col gap-3 rounded-lg bg-sand p-7">
         <h2 class="m-0 text-[32px]">{{ __('Make a night of it', 'jennylind') }}</h2>
         <p class="m-0 text-[15px] text-muted">Rooms upstairs mean no last-train dash.@if ($offer) {{ $offer['badge'] }} – see the Stay page.@endif</p>

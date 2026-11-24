@@ -271,6 +271,35 @@
     @apply flex flex-col gap-3.5 rounded-lg bg-paper p-6 text-ink shadow-[0_20px_50px_rgba(0,0,0,0.35)] md:p-7;
   }
 
+  /* What's On sidebar: subscribe to the events calendar */
+  .calendar-card {
+    @apply flex flex-col gap-4 rounded-lg border border-card-line bg-white p-6 md:p-7;
+  }
+
+  .calendar-card__help {
+    @apply rounded-md bg-paper px-4 py-3 text-[14px];
+  }
+
+  .calendar-card__help summary {
+    @apply cursor-pointer font-bold text-ink marker:text-accent;
+  }
+
+  .calendar-card__help dl {
+    @apply m-0 mt-3 flex flex-col gap-1;
+  }
+
+  .calendar-card__help dt {
+    @apply mt-2 font-bold text-ink first:mt-0;
+  }
+
+  .calendar-card__help dd {
+    @apply m-0 leading-snug text-muted;
+  }
+
+  .calendar-card__link {
+    @apply cursor-pointer border-0 bg-transparent p-0 font-bold text-accent-dark underline decoration-1 underline-offset-4 hover:text-ink;
+  }
+
   .offer {
     @apply flex items-center gap-3.5 rounded-md bg-ink-2 px-4 py-3 text-[15px] text-[#E6DED0];
   }

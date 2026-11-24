@@ -186,3 +186,20 @@ function event_time(\WP_Post $event): string
         ? event_start($event, 'ga')
         : event_start($event, 'g.ia');
 }
+
+/**
+ * Links for adding the events feed to a calendar app.
+ *
+ * @return array{feed: string, webcal: string, google: string}
+ */
+function calendar_links(): array
+{
+    $feed = function_exists('eo_get_events_feed') ? eo_get_events_feed() : home_url('/feed/eo-events/');
+    $webcal = preg_replace('#^https?://#', 'webcal://', $feed);
+
+    return [
+        'feed' => $feed,
+        'webcal' => $webcal,
+        'google' => 'https://calendar.google.com/calendar/r?cid='.rawurlencode($webcal),
+    ];
+}
