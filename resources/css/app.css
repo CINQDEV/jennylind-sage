@@ -295,6 +295,32 @@
     @apply flex flex-col gap-3.5 rounded-lg bg-paper p-6 text-ink shadow-[0_20px_50px_rgba(0,0,0,0.35)] md:p-7;
   }
 
+  /* Homepage: regular nights + latest Jenny Session */
+  .weekly-panel {
+    @apply mt-8 grid overflow-hidden rounded-lg bg-ink text-paper;
+  }
+
+  .weekly-panel__sessions {
+    @apply bg-ink-2 p-6 md:p-10;
+  }
+
+  .weekly-night {
+    @apply flex h-full flex-col gap-1 rounded-md border border-ink-line px-5 py-4 text-paper no-underline transition-colors hover:border-blush hover:bg-ink-2 hover:text-paper;
+  }
+
+  .weekly-night__day {
+    @apply text-[13px] font-bold tracking-[0.14em] text-blush uppercase;
+  }
+
+  .weekly-night__title {
+    @apply font-display text-[24px] font-extrabold uppercase;
+    line-height: 1.02;
+  }
+
+  .weekly-night__time {
+    @apply mt-auto pt-2 text-[15px] text-soft;
+  }
+
   /* ---------- The Jenny Sessions ---------- */
   .badge {
     @apply inline-block rounded-sm bg-accent px-3 py-1.5 text-[13px] font-bold tracking-[0.14em] text-white uppercase;

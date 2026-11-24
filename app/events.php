@@ -167,8 +167,10 @@ function regular_nights(int $lookahead = 40): array
         $nights[$title] = [
             'order' => (int) event_start($event, 'N'),
             'day' => event_start($event, 'D'),
+            'days' => event_start($event, 'l').'s',
             'title' => $title,
             'time' => event_time($event),
+            'url' => get_permalink($event),
         ];
     }
 
