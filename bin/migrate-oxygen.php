@@ -39,6 +39,10 @@ define('WP_USE_THEMES', false);
 require dirname(__DIR__, 4).'/wp-load.php';
 require_once ABSPATH.'wp-admin/includes/plugin.php';
 
+// Running from the CLI there is no logged-in user, so WordPress would strip
+// <script>/<iframe> from saved content. This is a trusted one-off migration.
+kses_remove_filters();
+
 /* -------------------------------------------------------------------------
  * Block builders
  * ---------------------------------------------------------------------- */
@@ -277,6 +281,16 @@ function jl_oxygen_node(array $node, array $map): string
 
         case 'ct_code_block':
             $code = trim((string) ($orig['code-php'] ?? ''));
+
+            // Sirvoy booking widget → the Sirvoy plugin's shortcode, which
+            // survives editing by users who can't save raw <script>.
+            if (str_contains($code, 'sirvoy.js') && preg_match('/data-form-id="([^"]+)"/', $code, $form)) {
+                return jl_shortcode(sprintf(
+                    '[sirvoy form-id="%s" target-result-url="%s"]',
+                    $form[1],
+                    home_url('/stay/reservations/')
+                ));
+            }
 
             return ($code === '' || $code === '<!-- -->' || str_contains($code, '<?')) ? '' : jl_html($code);
 
