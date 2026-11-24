@@ -99,8 +99,26 @@ if (modal) {
       event.preventDefault();
       modal.querySelector('[data-session-modal-title]').textContent = card.dataset.title;
       modal.querySelector('[data-session-modal-page]').href = card.dataset.page;
-      frameBox.replaceChildren(iframeFor(card.dataset.embed, card.dataset.title));
+      // Show the still with a big play button; the video loads when it's pressed.
+      const play = document.createElement('button');
+      play.type = 'button';
+      play.className = 'session-player__button h-full';
+      play.setAttribute('aria-label', `Play ${card.dataset.title}`);
+      play.innerHTML = `<span class="session-thumb h-full">
+        ${card.dataset.thumb ? `<img src="${card.dataset.thumb}" alt="">` : ''}
+        <span class="session-thumb__play session-thumb__play--lg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+        ${card.dataset.number ? `<span class="session-thumb__num">${card.dataset.number}</span>` : ''}
+      </span>`;
+      const img = play.querySelector('img');
+      if (img && card.dataset.fallback) {
+        img.addEventListener('error', () => { img.src = card.dataset.fallback; }, { once: true });
+      }
+      play.addEventListener('click', () => {
+        frameBox.replaceChildren(iframeFor(card.dataset.embed, card.dataset.title));
+      });
+      frameBox.replaceChildren(play);
       modal.showModal();
+      play.focus();
     });
   });
 }
