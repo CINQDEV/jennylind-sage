@@ -1,7 +1,7 @@
 {{--
   Template Name: Whats On
-  Redesign: "Tonight" feature, then upcoming events grouped by week with
-  Gigs / Weekly sessions filters, and the weekly nights alongside.
+  Redesign: "Tonight" feature, then upcoming events grouped by week, with
+  the weekly nights alongside.
 --}}
 @extends('layouts.app')
 
@@ -16,14 +16,6 @@
 @section('eyebrow', __('Gigs, sessions & nights out', 'jennylind'))
 @section('band-padding', 'pb-40 md:pb-56')
 
-@section('band-aside')
-  <div role="group" aria-label="{{ __('Filter events', 'jennylind') }}" class="flex flex-wrap gap-2" data-event-filters>
-    <button type="button" class="filter-chip" aria-pressed="true" data-filter="all">{{ __('All', 'jennylind') }}</button>
-    <button type="button" class="filter-chip" aria-pressed="false" data-filter="gig">{{ __('Gigs', 'jennylind') }}</button>
-    <button type="button" class="filter-chip" aria-pressed="false" data-filter="weekly">{{ __('Weekly sessions', 'jennylind') }}</button>
-  </div>
-@endsection
-
 @section('content')
   @if ($next)
     {{-- Overlaps the photo band above (see band-padding) --}}
@@ -35,9 +27,9 @@
   @endif
 
   <section aria-label="{{ __('Upcoming events', 'jennylind') }}" class="container-site flex flex-wrap gap-12 pt-14 pb-20 md:pt-16 md:pb-24">
-    <div class="min-w-0 flex-[999_1_640px]" data-event-list>
+    <div class="min-w-0 flex-[999_1_640px]">
       @forelse ($groups as $label => $events)
-        <div class="mb-10" data-event-group>
+        <div class="mb-10">
           <h2 class="mt-0 mb-2 text-[32px] md:text-[40px]">{{ $label }}</h2>
           @foreach ($events as $event)
             @include('partials.events.row', ['event' => $event])
@@ -46,8 +38,6 @@
       @empty
         <p>{{ __('No events listed just now – check back soon.', 'jennylind') }}</p>
       @endforelse
-
-      <p class="hidden text-muted" data-event-empty>{{ __('Nothing of that kind coming up yet.', 'jennylind') }}</p>
     </div>
 
     <aside class="flex flex-[1_1_300px] flex-col gap-6">

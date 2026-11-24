@@ -1,5 +1,5 @@
 {{-- Event list row: date, poster thumbnail, title, time. --}}
-<a class="event-row" href="{{ get_permalink($event) }}" data-kind="{{ App\event_is_regular($event) ? 'weekly' : 'gig' }}">
+<a class="event-row" href="{{ get_permalink($event) }}">
   <div class="event-row__date">
     <span class="block text-[13px] font-extrabold tracking-[0.1em] text-accent md:text-[15px]">{{ strtoupper(App\event_start($event, 'D')) }}</span>
     <span class="block text-[34px] font-black md:text-[44px]">{{ App\event_start($event, 'j') }}</span>

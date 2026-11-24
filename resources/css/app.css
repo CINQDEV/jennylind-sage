@@ -225,11 +225,6 @@
     line-height: 1.05;
   }
 
-  .filter-chip {
-    @apply min-h-11 cursor-pointer rounded-full border border-ink-line bg-transparent px-[18px] text-[15px] font-semibold text-paper;
-  }
-
-  .filter-chip[aria-pressed="true"] { @apply border-paper bg-paper text-ink; }
 
   /* Event Organiser's "Event Details" box (single events) */
   .event-details hr,
