@@ -291,10 +291,7 @@
   /* Old inline colour spans from the classic editor: use the new palette. */
   .entry-content [style*="color: #e63946"] { color: inherit !important; }
 
-  .wp-block-button__link,
-  .button {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded bg-accent px-6 py-3 font-semibold text-white no-underline transition-colors hover:bg-accent-dark hover:text-white;
-  }
+
 
   .wp-block-columns { @apply flex flex-col gap-8 md:flex-row; }
   .wp-block-column { @apply min-w-0 flex-1; }
@@ -316,4 +313,33 @@
 
   .entry-content .jl-photo-card h2 { @apply m-0 text-[36px] text-paper md:text-[44px]; }
   .jl-photo-card p { @apply text-[#E6DED0]; }
+}
+
+/*
+ * Outside the layers on purpose: WordPress's own (unlayered) button styles
+ * would otherwise beat any layered rule.
+ */
+.wp-block-button .wp-block-button__link,
+.wp-element-button,
+.button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background-color: var(--color-accent);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.wp-block-button .wp-block-button__link:hover,
+.wp-element-button:hover,
+.button:hover {
+  background-color: var(--color-accent-dark);
+  color: #fff;
 }
