@@ -27,10 +27,11 @@
   @endif
 
   <section aria-label="{{ __('Upcoming events', 'jennylind') }}" class="container-site flex flex-wrap gap-12 pt-14 pb-20 md:pt-16 md:pb-24">
-    <div class="min-w-0 flex-[999_1_640px]">
-      @forelse ($groups as $label => $events)
-        <div class="mb-10">
-          <h2 class="mt-0 mb-2 text-[32px] md:text-[40px]">{{ $label }}</h2>
+    <div class="min-w-0 flex-[999_1_640px]" data-load-more-list>
+      @forelse ($groups->values() as $i => $events)
+        {{-- This week and next week show straight away; later weeks load on demand --}}
+        <div class="mb-10" @if ($i > 1) data-more-week hidden @endif>
+          <h2 class="mt-0 mb-2 text-[32px] md:text-[40px]">{{ $groups->keys()[$i] }}</h2>
           @foreach ($events as $event)
             @include('partials.events.row', ['event' => $event])
           @endforeach
@@ -38,6 +39,11 @@
       @empty
         <p>{{ __('No events listed just now – check back soon.', 'jennylind') }}</p>
       @endforelse
+
+      @if ($groups->count() > 2)
+        <button type="button" class="btn btn-outline w-full sm:w-auto" data-load-more>{{ __('Load more events', 'jennylind') }}</button>
+        <noscript><style>[data-more-week]{display:block!important}[data-load-more]{display:none}</style></noscript>
+      @endif
     </div>
 
     <aside class="flex flex-[1_1_300px] flex-col gap-6">

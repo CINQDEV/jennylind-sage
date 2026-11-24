@@ -14,3 +14,20 @@ toggle?.addEventListener('click', () => {
   toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
 });
+
+/**
+ * What's On: reveal two more weeks of listings per click.
+ */
+const loadMore = document.querySelector('[data-load-more]');
+
+loadMore?.addEventListener('click', () => {
+  const hiddenWeeks = [...document.querySelectorAll('[data-more-week][hidden]')];
+  const next = hiddenWeeks.slice(0, 2);
+
+  next.forEach((week) => { week.hidden = false; });
+  next[0]?.querySelector('a')?.focus({ preventScroll: true });
+
+  if (hiddenWeeks.length <= 2) {
+    loadMore.remove();
+  }
+});
