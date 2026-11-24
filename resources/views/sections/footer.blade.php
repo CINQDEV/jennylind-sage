@@ -1,6 +1,6 @@
 <footer class="site-footer">
   <div class="container-site flex flex-wrap justify-between gap-10 pt-16 pb-8">
-    <a href="{{ home_url('/') }}" class="flex" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
+    <a href="{{ home_url('/') }}" class="sign-swing flex" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
       <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="{{ $siteName }}" width="182" height="80" class="h-20 w-auto">
     </a>
 

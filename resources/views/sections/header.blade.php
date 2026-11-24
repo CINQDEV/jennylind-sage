@@ -1,6 +1,6 @@
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-header__logo flex" href="{{ home_url('/') }}" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
+    <a class="site-header__logo sign-swing flex" href="{{ home_url('/') }}" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
       <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="{{ $siteName }}" width="146" height="64">
     </a>
 
