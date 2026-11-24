@@ -17,11 +17,12 @@
  *  2. Assigns the Sage page templates that replace the Oxygen ones.
  *  3. Activates the theme and assigns the existing menus to its locations.
  *  4. Tells Event Organiser to leave single-event templates to the theme.
- *  5. Deactivates Oxygen, OxyExtras and Classic Editor (reactivate them in
+ *  5. Deactivates Oxygen, OxyExtras, Swiss Knife (an Oxygen add-on) and
+ *     Classic Editor (reactivate them in
  *     Plugins to roll back; nothing is deleted).
  *
- * Safe to run more than once: content is only converted from its Oxygen
- * source, and the backup meta is written only the first time.
+ * Safe to run more than once: content is always converted from its Oxygen
+ * source or the saved original, and the backup meta is written only once.
  */
 
 if (PHP_SAPI !== 'cli') {
@@ -364,14 +365,22 @@ if ($pages['whats-on']) {
     $content[$pages['whats-on']->ID] = '';
 }
 
-// Classic content → blocks.
+// Classic content → blocks. On a re-run, convert from the saved original so
+// already-converted content is not processed twice.
+function jl_original_content(WP_Post $post): string
+{
+    $saved = get_post_meta($post->ID, '_jl_pre_sage_content', true);
+
+    return metadata_exists('post', $post->ID, '_jl_pre_sage_content') ? (string) $saved : $post->post_content;
+}
+
 foreach (['home', 'contact', 'shanty'] as $slug) {
     if ($pages[$slug]) {
-        $content[$pages[$slug]->ID] = jl_html_to_blocks(wpautop($pages[$slug]->post_content));
+        $content[$pages[$slug]->ID] = jl_html_to_blocks(wpautop(jl_original_content($pages[$slug])));
     }
 }
 if ($songsheet = get_page_by_path('shanty-songsheet', OBJECT, 'post')) {
-    $content[$songsheet->ID] = jl_html_to_blocks(wpautop($songsheet->post_content));
+    $content[$songsheet->ID] = jl_html_to_blocks(wpautop(jl_original_content($songsheet)));
 }
 
 // Shanty: Oxygen added a PDF download button under the content.
@@ -439,6 +448,7 @@ if (is_array($eo)) {
 $off = array_values(array_filter([
     'oxygen/functions.php',
     'oxyextras/oxy-extras.php',
+    'swiss-knife/swiss-knife.php',
     'classic-editor/classic-editor.php',
 ], 'is_plugin_active'));
 if ($off) {

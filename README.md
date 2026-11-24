@@ -47,7 +47,7 @@ Requires PHP 8.2+, Node 20.19+ / 22.12+.
 - assigns the new page templates,
 - activates this theme and sets the menus (Main Menu → primary, Footer → legal),
 - turns off Event Organiser's own templates,
-- deactivates Oxygen, OxyExtras and Classic Editor (reactivate to roll back).
+- deactivates Oxygen, OxyExtras, Swiss Knife and Classic Editor (reactivate to roll back).
 
 From the site root:
 
