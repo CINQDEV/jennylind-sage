@@ -14,6 +14,7 @@
 @endphp
 
 @section('eyebrow', __('Gigs, sessions & nights out', 'jennylind'))
+@section('band-padding', 'pb-40 md:pb-56')
 
 @section('band-aside')
   <div role="group" aria-label="{{ __('Filter events', 'jennylind') }}" class="flex flex-wrap gap-2" data-event-filters>
@@ -25,7 +26,8 @@
 
 @section('content')
   @if ($next)
-    <section aria-label="{{ __('Next event', 'jennylind') }}" class="bg-[linear-gradient(180deg,var(--color-ink)_0_50%,transparent_50%_100%)]">
+    {{-- Overlaps the photo band above (see band-padding) --}}
+    <section aria-label="{{ __('Next event', 'jennylind') }}" class="relative z-10 -mt-28 md:-mt-40">
       <div class="container-site">
         @include('partials.events.tonight', ['event' => $next, 'variant' => 'feature'])
       </div>
