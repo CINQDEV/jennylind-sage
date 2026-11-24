@@ -1,0 +1,412 @@
+@import "tailwindcss" theme(static);
+@import "@fontsource-variable/source-sans-3";
+@source "../../app/**/*.php";
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+@font-face {
+  font-family: "Paddington";
+  src: url("@fonts/Paddington.woff2") format("woff2"), url("@fonts/Paddington.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Design tokens taken from the Oxygen global settings / global colours.
+ */
+@theme {
+  --font-sans: "Source Sans 3 Variable", "Source Sans Pro", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Paddington", "Source Sans 3 Variable", ui-sans-serif, sans-serif;
+
+  --color-red: #e63946;        /* Imperial Red – headings, hero label, hover */
+  --color-navy: #1d3557;       /* Prussian Blue – body text, bottom footer */
+  --color-blue: #457b9d;       /* Caledon Blue – sticky header, footer, event boxes */
+  --color-powder: #a8dadc;     /* Powder Blue – accents, footer strip */
+  --color-honeydew: #f1faee;   /* Honeydew – page background */
+  --color-orange: #ffb442;
+  --color-rust: #8e2700;
+  --color-green: #346646;
+
+  --container-site: 1168px;
+}
+
+@utility container-site {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-site);
+}
+
+/*
+ * Base typography (Oxygen global styles).
+ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-honeydew font-sans text-navy antialiased;
+    font-size: 17px;
+    line-height: 1.4;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-red uppercase;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  h1 { font-size: 40px; }
+  h2 { font-size: 22px; line-height: 2; }
+  h3 { font-size: 18px; @apply text-navy; }
+  h4 { font-size: 17px; @apply text-navy; }
+
+  a {
+    @apply text-navy no-underline transition-colors;
+  }
+
+  a:hover {
+    @apply text-red;
+  }
+
+  img {
+    @apply h-auto max-w-full;
+  }
+}
+
+@layer components {
+  /* ---------- Header ---------- */
+  .site-header {
+    @apply absolute inset-x-0 top-0 z-30;
+  }
+
+  .site-header__bar {
+    @apply bg-black/60 px-4 lg:px-10;
+  }
+
+  .site-header__inner {
+    @apply container-site flex items-center justify-between;
+  }
+
+  .site-header__logo img {
+    @apply my-2.5 h-[50px] w-auto transition-all duration-300 lg:h-[100px];
+  }
+
+  .site-header.is-sticky {
+    @apply fixed shadow-[0_0_10px_rgba(0,0,0,0.3)];
+  }
+
+  .site-header.is-sticky .site-header__bar {
+    @apply bg-blue;
+  }
+
+  .site-header.is-sticky .site-header__logo img {
+    @apply h-[50px];
+  }
+
+  .admin-bar .site-header.is-sticky {
+    top: var(--wp-admin--admin-bar--height, 32px);
+  }
+
+  .primary-nav ul {
+    @apply hidden list-none items-center gap-5 p-0 xl:flex;
+  }
+
+  .primary-nav a,
+  .mobile-nav a {
+    @apply block px-2.5 py-1.5 font-display text-[25px] font-medium text-white uppercase;
+  }
+
+  .primary-nav a:hover,
+  .primary-nav .current-menu-item > a {
+    @apply bg-red text-white;
+  }
+
+  .primary-nav .sub-menu {
+    @apply absolute hidden bg-red;
+  }
+
+  .primary-nav li {
+    @apply relative;
+  }
+
+  .primary-nav li:hover > .sub-menu {
+    @apply block;
+  }
+
+  .menu-toggle {
+    @apply flex h-10 w-10 flex-col justify-between py-1 xl:hidden;
+  }
+
+  .menu-toggle span {
+    @apply block h-1.5 w-full rounded-sm bg-white transition-transform;
+  }
+
+  .mobile-nav {
+    @apply hidden bg-blue xl:hidden;
+  }
+
+  .mobile-nav.is-open {
+    @apply block;
+  }
+
+  .mobile-nav ul {
+    @apply m-0 list-none px-4 py-3;
+  }
+
+  /* ---------- Hero (Oxygen "Header v2" section) ---------- */
+  .hero {
+    @apply relative min-h-[50vh] bg-navy bg-cover bg-center px-4 lg:px-10;
+  }
+
+  .hero__inner {
+    @apply container-site relative min-h-[50vh];
+  }
+
+  .hero__title {
+    @apply absolute bottom-[5px] -mb-5 bg-red px-2.5 pt-2.5 text-honeydew;
+    font-size: 40px;
+    line-height: 1.4;
+  }
+
+  /* ---------- Main ---------- */
+  .site-main {
+    @apply bg-honeydew pt-[50px] pb-16;
+  }
+
+  .entry-content > * + *,
+  .entry-content :where(.wp-block-group, .wp-block-column) > * + * {
+    @apply mt-4;
+  }
+
+  .entry-content p:empty {
+    @apply hidden;
+  }
+
+  .entry-content ul {
+    @apply list-disc pl-6;
+  }
+
+  .entry-content ol {
+    @apply list-decimal pl-6;
+  }
+
+  .entry-content a:not(.wp-block-button__link) {
+    @apply underline decoration-powder underline-offset-2;
+  }
+
+  .entry-content h2 a,
+  .entry-content h3 a {
+    @apply text-inherit no-underline;
+  }
+
+  .two-col {
+    @apply flex flex-col gap-0 px-4 lg:flex-row lg:px-10;
+  }
+
+  .two-col__main {
+    @apply w-full py-5 lg:w-[70%] lg:pr-5;
+  }
+
+  .two-col__side {
+    @apply w-full lg:w-[30%];
+  }
+
+  .two-col__side--ruled {
+    @apply pt-[30px] lg:border-l lg:border-dashed lg:border-powder lg:pl-5;
+  }
+
+  /* ---------- Event lists ---------- */
+  .event-box {
+    @apply mt-[30px] w-full;
+  }
+
+  .event-box__title {
+    @apply m-0 mt-[5px] block bg-blue pt-2.5 text-center text-[36px] text-honeydew;
+  }
+
+  .event-box__list {
+    @apply bg-blue text-left;
+  }
+
+  .event-meta {
+    @apply flex w-full justify-between px-2.5 py-[5px] text-[12px] font-semibold text-powder;
+  }
+
+  .event-image {
+    @apply block min-h-[120px] w-full bg-cover bg-center bg-no-repeat;
+  }
+
+  .event-link {
+    @apply block w-full px-2.5 pt-2.5 pb-[5px] text-left;
+  }
+
+  .event-link h3 {
+    @apply m-0 text-honeydew;
+  }
+
+  .event-link p {
+    @apply mt-[5px] mb-0 text-[15px] font-normal text-powder;
+  }
+
+  .event-box__item + .event-box__item {
+    @apply border-t border-powder;
+  }
+
+  .event-box__item {
+    @apply mb-2.5;
+  }
+
+  .event-box__more {
+    @apply flex w-full items-center justify-center bg-honeydew p-[5px];
+  }
+
+  .event-box__more a {
+    @apply text-blue hover:text-powder;
+  }
+
+  /* What's On page: featured cards + grid */
+  .event-cards {
+    @apply grid grid-cols-1 gap-5 md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))];
+  }
+
+  .event-card {
+    @apply flex h-full flex-col;
+  }
+
+  .event-card .event-image {
+    @apply min-h-[250px];
+  }
+
+  .event-card .event-meta {
+    @apply text-[15px] text-navy;
+  }
+
+  .event-card .event-link h3 {
+    @apply text-navy;
+  }
+
+  .event-card .event-link p {
+    @apply text-navy/80;
+  }
+
+  .event-grid {
+    @apply grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .event-tile {
+    @apply flex h-full flex-col bg-navy;
+  }
+
+  .event-tile .event-image {
+    @apply min-h-[100px];
+  }
+
+  .event-tile .event-meta {
+    @apply px-2.5 text-[15px] text-blue;
+  }
+
+  .event-tile .event-link h3 {
+    @apply text-honeydew;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer-wave {
+    @apply pointer-events-none absolute inset-x-0 -top-px -scale-y-100;
+  }
+
+  .footer-wave svg {
+    @apply absolute bottom-0 left-0 h-5 w-full min-w-full;
+  }
+
+  .site-footer h3,
+  .site-footer .footer-heading {
+    @apply m-0 text-honeydew;
+  }
+
+  .footer-legal a {
+    @apply text-[16px] text-powder;
+  }
+
+  .social-icons a {
+    @apply inline-block text-powder hover:text-white;
+  }
+
+  .back-to-top {
+    @apply invisible fixed right-0 bottom-0 z-40 m-[30px] flex h-12 w-12 items-center justify-center bg-red text-honeydew opacity-0 transition-all duration-300;
+  }
+
+  .back-to-top.is-visible {
+    @apply visible opacity-100;
+  }
+
+  /* ---------- Buttons ---------- */
+  .wp-block-button__link,
+  .button {
+    @apply inline-block border border-red bg-red px-8 py-5 text-white no-underline transition-colors;
+  }
+
+  .wp-block-button__link:hover,
+  .button:hover {
+    @apply border-black bg-black text-white;
+  }
+}
+
+/*
+ * Page content migrated from Oxygen (see bin/migrate-oxygen.php). These are
+ * block classNames set by the migration so the pages keep their old look.
+ */
+@layer components {
+  /* Our Bars: four photo cards with a dark caption box */
+  .jl-photo-grid {
+    @apply grid grid-cols-1 gap-5 md:grid-cols-2;
+  }
+
+  .jl-photo-card {
+    @apply flex min-h-[550px] flex-col justify-end bg-cover bg-center;
+  }
+
+  .jl-photo-card .wp-block-group__inner-container,
+  .jl-photo-card__caption {
+    @apply bg-black/50 p-5;
+  }
+
+  .jl-photo-card h2 {
+    @apply m-0 text-[40px] text-white;
+  }
+
+  .jl-photo-card p {
+    @apply text-white;
+  }
+
+  /* Stay: intro + Sirvoy booking widget, then three info columns */
+  .jl-stay-intro h2 {
+    @apply mt-[30px] mb-2.5 text-navy;
+  }
+
+  .jl-stay-intro h3 {
+    @apply text-navy;
+  }
+
+  .jl-stay-intro .is-style-soft {
+    @apply mt-2.5 text-powder;
+  }
+
+  .jl-info-columns h2 {
+    @apply text-blue;
+  }
+
+  .jl-info-columns .wp-block-group,
+  .jl-info-columns .jl-info {
+    @apply mb-5 border-b-2 border-dashed border-powder pb-5;
+  }
+
+  .wp-block-columns {
+    @apply flex flex-col gap-8 md:flex-row;
+  }
+
+  .wp-block-column {
+    @apply min-w-0 flex-1;
+  }
+}
