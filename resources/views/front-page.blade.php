@@ -13,9 +13,11 @@
   <section class="home-hero">
     @include('partials.band-image', ['src' => $heroImage ?: Vite::asset('resources/images/bar-crowd.jpg')])
     <div class="home-hero__shade relative">
-      <div class="container-site flex flex-wrap items-end justify-between gap-10 pt-[128px] pb-8 md:pt-[172px] md:pb-[88px] lg:pt-[200px]">
+      <div class="container-site pt-[128px] pb-8 md:pt-[172px] md:pb-[88px] lg:pt-[200px]">
+      <p class="eyebrow eyebrow--light mb-4">69 High Street · Hastings Old Town</p>
+      {{-- Tonight card's top lines up with the top of the headline --}}
+      <div class="flex flex-wrap items-start justify-between gap-10">
         <div class="max-w-[680px] flex-[1_1_560px] text-paper">
-          <p class="eyebrow eyebrow--light mb-4">69 High Street · Hastings Old Town</p>
           <h1 class="m-0 text-[60px] md:text-[104px]" style="line-height: 0.92">Live music,<br>real ale &amp;<br>rooms upstairs</h1>
           <p class="mt-6 mb-0 max-w-[520px] text-[18px] text-[#E6DED0] md:text-[20px]">A proper Old Town inn, two minutes from the beach and the Stade's net huts. Gigs most nights, cask ales on the hand-pulls, en-suite rooms above the bar.</p>
           <div class="mt-8 hidden flex-wrap gap-4 md:flex">
@@ -29,6 +31,7 @@
             @include('partials.events.tonight', ['event' => $next, 'variant' => 'card'])
           </div>
         @endif
+      </div>
       </div>
     </div>
   </section>
