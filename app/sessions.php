@@ -94,6 +94,29 @@ function is_facebook_video(?string $url): bool
     return (bool) ($url && preg_match('~^https?://((www|m|web)\.)?(facebook\.com|fb\.watch)/~i', $url));
 }
 
+/**
+ * Can this Facebook video play on other sites? Facebook refuses for videos
+ * that aren't public (e.g. Stories) and ones it thinks contain music owned by
+ * someone else. Returns null if Facebook couldn't be asked.
+ */
+function facebook_embeddable(string $link): ?bool
+{
+    $response = wp_remote_get(
+        'https://www.facebook.com/plugins/video.php?show_text=false&width=560&href='.rawurlencode($link),
+        ['timeout' => 20, 'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36']
+    );
+
+    if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+        return null;
+    }
+
+    $html = html_entity_decode(wp_remote_retrieve_body($response), ENT_QUOTES);
+
+    // The real error messages; the player page also carries a hidden "Video
+    // unavailable" template, so match these exactly.
+    return ! preg_match("/can't be embedded|may no longer exist|>Video Unavailable</", $html);
+}
+
 /** YouTube video ID from any normal YouTube link (watch, youtu.be, shorts, live, embed). */
 function youtube_id(?string $url): ?string
 {

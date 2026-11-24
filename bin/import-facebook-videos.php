@@ -100,7 +100,7 @@ function jl_graph(string $url): array
     return $body;
 }
 
-$fields = 'id,title,description,created_time,permalink_url,length,picture,thumbnails{uri,width,is_preferred}';
+$fields = 'id,title,description,created_time,permalink_url,length,picture,embeddable,published,thumbnails{uri,width,is_preferred}';
 $url = GRAPH.rawurlencode($page['id']).'/videos?'.http_build_query([
     'fields' => $fields,
     'limit' => min(50, $limit),
@@ -186,6 +186,20 @@ $created = $skipped = 0;
 
 foreach ($videos as $video) {
     $when = (new DateTimeImmutable($video['created_time']))->setTimezone($tz);
+    $link = $video['permalink_url'] ?? '';
+    $link = str_starts_with($link, 'http') ? $link : 'https://www.facebook.com'.$link;
+
+    // Skip videos that can't play on the website: Stories, unpublished or
+    // ad videos, and ones Facebook blocks for music owned by someone else.
+    if ((isset($video['embeddable']) && ! $video['embeddable']) || (isset($video['published']) && ! $video['published'])
+        || \App\facebook_embeddable($link) === false) {
+        $unplayable = ($unplayable ?? 0) + 1;
+        if ($list_only) {
+            printf("  %s  -      (can't play on the website – skipped) %s\n", $when->format('Y-m-d'), $video['title'] ?? '');
+        }
+        continue;
+    }
+
     $event = jl_matching_event($when);
     $title = jl_video_title($video, $when);
     // No title on Facebook: name it after the band from that night's gig.
@@ -205,8 +219,6 @@ foreach ($videos as $video) {
         continue;
     }
 
-    $link = $video['permalink_url'] ?? '';
-    $link = str_starts_with($link, 'http') ? $link : 'https://www.facebook.com'.$link;
 
     $post_id = wp_insert_post([
         'post_type' => 'jl_session',
@@ -250,5 +262,5 @@ if ($list_only) {
     exit;
 }
 
-echo "\nImported {$created} as drafts".($skipped ? ", skipped {$skipped} already imported" : '').".\n";
+echo "\nImported {$created} as drafts".($skipped ? ", skipped {$skipped} already imported" : '').(! empty($unplayable) ? ", left out {$unplayable} that Facebook won't let play on other sites" : '').".\n";
 echo "Next: wp-admin › Jenny Sessions › Drafts. Publish the great ones (add a style, tidy the title); bin the rest.\n";
