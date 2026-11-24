@@ -131,7 +131,8 @@ function jl_already_imported(string $fb_id): bool
 {
     return (bool) get_posts([
         'post_type' => 'jl_session',
-        'post_status' => 'any',
+        // Include binned ones, so videos you've removed don't come back.
+        'post_status' => ['publish', 'draft', 'pending', 'private', 'future', 'trash'],
         'numberposts' => 1,
         'fields' => 'ids',
         'meta_key' => 'session_fb_id',
