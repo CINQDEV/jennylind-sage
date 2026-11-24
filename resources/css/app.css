@@ -109,7 +109,8 @@
 
   /* ---------- Header ---------- */
   .site-header {
-    @apply relative z-40 bg-ink text-paper;
+    /* Sits over the hero / title band so the photo runs behind the menu. */
+    @apply absolute inset-x-0 top-0 z-40 text-paper;
   }
 
   .site-header__inner {
@@ -122,7 +123,7 @@
   }
 
   .site-header__plaque {
-    @apply flex items-center justify-center bg-ink px-3 pt-2 pb-2 lg:rounded-b-2xl lg:px-8 lg:pt-4 lg:pb-5 lg:shadow-[0_14px_30px_rgba(0,0,0,0.35)];
+    @apply flex items-center justify-center lg:rounded-b-2xl lg:bg-ink lg:px-8 lg:pt-4 lg:pb-5 lg:shadow-[0_14px_30px_rgba(0,0,0,0.35)];
   }
 
   .site-header__plaque img {
@@ -169,7 +170,7 @@
   }
 
   .menu-toggle {
-    @apply flex h-11 w-11 items-center justify-center rounded border border-ink-line text-paper lg:hidden;
+    @apply flex h-11 w-11 items-center justify-center rounded border border-paper/40 bg-ink/30 text-paper lg:hidden;
   }
 
   .mobile-nav {
@@ -207,7 +208,7 @@
   }
 
   .page-band__inner {
-    @apply container-site flex flex-wrap items-end justify-between gap-6 pt-12 md:pt-16 lg:pt-32;
+    @apply container-site flex flex-wrap items-end justify-between gap-6 pt-[120px] md:pt-[140px] lg:pt-[196px];
   }
 
   .page-band h1 {
