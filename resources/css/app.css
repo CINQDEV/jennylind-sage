@@ -78,6 +78,15 @@
 }
 
 /* ------------------------------------------------------------------ */
+@layer base {
+  html { scroll-padding-top: 96px; }
+}
+
+@media (max-width: 600px) {
+  /* The admin bar scrolls away on phones, so don't leave a gap for it. */
+  .site-header.is-scrolled { top: 0; }
+}
+
 @layer components {
   /* Type helpers */
   .eyebrow {
@@ -109,8 +118,22 @@
 
   /* ---------- Header ---------- */
   .site-header {
-    /* Sits over the hero / title band so the photo runs behind the menu. */
-    @apply absolute inset-x-0 top-0 z-40 text-paper;
+    /* Fixed over the hero / title band, so the photo runs behind the menu.
+       Once the page scrolls it gets a solid background and the sign shrinks. */
+    @apply fixed inset-x-0 z-40 text-paper transition-[background-color,box-shadow] duration-300;
+    top: var(--wp-admin--admin-bar--height, 0px);
+  }
+
+  .site-header.is-scrolled {
+    @apply bg-ink/95 shadow-[0_6px_20px_rgba(0,0,0,0.25)] backdrop-blur-sm;
+  }
+
+  .site-header.is-scrolled .site-header__plaque {
+    @apply lg:px-5 lg:pt-1.5 lg:pb-1.5 lg:shadow-none;
+  }
+
+  .site-header.is-scrolled .site-header__plaque img {
+    @apply h-12 sm:h-14 lg:h-16 xl:h-16;
   }
 
   .site-header__inner {
@@ -123,11 +146,11 @@
   }
 
   .site-header__plaque {
-    @apply flex items-center justify-center lg:rounded-b-2xl lg:bg-ink lg:px-8 lg:pt-4 lg:pb-5 lg:shadow-[0_14px_30px_rgba(0,0,0,0.35)];
+    @apply flex items-center justify-center transition-[padding,box-shadow] duration-300 lg:rounded-b-2xl lg:bg-ink lg:px-8 lg:pt-4 lg:pb-5 lg:shadow-[0_14px_30px_rgba(0,0,0,0.35)];
   }
 
   .site-header__plaque img {
-    @apply h-14 w-auto sm:h-16 lg:h-[104px] xl:h-[124px];
+    @apply h-14 w-auto transition-[height] duration-300 sm:h-16 lg:h-[104px] xl:h-[124px];
   }
 
   /* Logo: swings like a hanging pub sign on hover/focus. */
