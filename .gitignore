@@ -4,3 +4,7 @@
 !/public/.gitkeep
 .env
 npm-debug.log
+
+# macOS / Google Drive clutter
+.DS_Store
+Icon?
