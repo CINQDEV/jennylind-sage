@@ -69,10 +69,9 @@
       {{-- Regular nights, plus the latest Jenny Session --}}
       <div @class(['weekly-panel', 'lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]' => $regulars && $session])>
         @if ($regulars)
-          <div class="flex flex-col p-6 md:p-10">
-            <p class="eyebrow eyebrow--light mb-2">{{ __('Regulars', 'jennylind') }}</p>
-            <h3 class="mt-0 mb-6 text-[40px] md:text-[52px]">{{ __('Every week', 'jennylind') }}</h3>
-            <ul @class(['m-0 grid list-none gap-3 p-0', 'sm:grid-cols-2' => count($regulars) === 2, 'sm:grid-cols-3' => count($regulars) >= 3])>
+          <div class="flex flex-col p-5 md:p-7">
+            <h3 class="mt-0 mb-4 text-[26px] md:text-[30px]">{{ __('Every week', 'jennylind') }}</h3>
+            <ul @class(['m-0 grid list-none gap-2.5 p-0', 'sm:grid-cols-2' => count($regulars) === 2, 'sm:grid-cols-3' => count($regulars) >= 3])>
               @foreach ($regulars as $night)
                 <li>
                   <a class="weekly-night" href="{{ $night['url'] }}">
@@ -83,7 +82,7 @@
                 </li>
               @endforeach
             </ul>
-            <p class="m-0 mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-ink-line pt-6 lg:mt-auto">
+            <p class="m-0 mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[14px]">
               <a class="link-underline text-paper" href="{{ App\calendar_links()['webcal'] }}">{{ __('Add our gigs to your calendar', 'jennylind') }} →</a>
               <a class="link-underline text-paper" href="{{ home_url('/shanty/') }}">{{ __('Shanty songsheets', 'jennylind') }} →</a>
             </p>
@@ -92,17 +91,17 @@
 
         @if ($session)
           <div class="weekly-panel__sessions">
-            <p class="eyebrow eyebrow--light mb-2">{{ __('The Jenny Sessions', 'jennylind') }}</p>
-            <h3 class="mt-0 mb-5 text-[40px] md:text-[52px]">{{ __('Missed a gig?', 'jennylind') }}</h3>
-            <a class="block overflow-hidden rounded-md text-paper no-underline hover:text-paper" href="{{ $session['url'] }}"
+            <h3 class="mt-0 mb-4 text-[26px] md:text-[30px]">{{ __('The Jenny Sessions', 'jennylind') }}</h3>
+            <a class="weekly-session" href="{{ $session['url'] }}"
               @if ($session['embed']) data-session-open data-embed="{{ $session['embed'] }}" data-title="{{ $session['title'] }}" data-page="{{ $session['url'] }}" data-thumb="{{ $session['thumb'] }}" data-fallback="{{ $session['thumb_fallback'] }}" data-watch="{{ $session['watch'] }}" data-source="{{ $session['source'] }}" data-number="{{ $session['number'] ? '#'.str_pad($session['number'], 2, '0', STR_PAD_LEFT) : '' }}" @endif>
-              @include('partials.sessions.thumb', ['s' => $session, 'size' => 'lg'])
-              <span class="block bg-ink px-4 py-3">
-                <span class="block font-display text-[22px] font-extrabold uppercase" style="line-height: 1.05">{{ $session['title'] }}</span>
-                @if ($session['date'])<span class="mt-1 block text-[14px] text-soft">{{ sprintf(__('Played %s', 'jennylind'), $session['date']) }}</span>@endif
+              <span class="w-36 flex-none overflow-hidden rounded sm:w-40">@include('partials.sessions.thumb', ['s' => $session])</span>
+              <span class="min-w-0">
+                <span class="block text-[12px] font-bold tracking-[0.14em] text-blush uppercase">{{ __('Missed a gig?', 'jennylind') }}</span>
+                <span class="mt-1 block font-display text-[19px] font-extrabold uppercase" style="line-height: 1.05">{{ $session['title'] }}</span>
+                @if ($session['date'])<span class="mt-1 block text-[13px] text-soft">{{ sprintf(__('Played %s', 'jennylind'), $session['date']) }}</span>@endif
               </span>
             </a>
-            <a class="link-underline mt-5 inline-block text-paper" href="{{ App\sessions_url() }}">{{ __('Watch all the sessions', 'jennylind') }} →</a>
+            <a class="link-underline mt-4 inline-block text-[14px] text-paper" href="{{ App\sessions_url() }}">{{ __('Watch all the sessions', 'jennylind') }} →</a>
           </div>
         @endif
       </div>
