@@ -14,7 +14,7 @@
         @endif
 
         @if (function_exists('eo_get_template_part'))
-          <div class="mb-8 rounded-lg bg-sand p-5 [&_h4]:m-0 [&_h4]:text-[22px] [&_ul]:mt-2 [&_ul]:mb-0 [&_ul]:list-none [&_ul]:p-0">
+          <div class="event-details mb-8 rounded-lg bg-sand px-6 py-5">
             @php(eo_get_template_part('event-meta', 'event-single'))
           </div>
         @endif

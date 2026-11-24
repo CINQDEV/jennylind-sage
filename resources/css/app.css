@@ -231,6 +231,18 @@
 
   .filter-chip[aria-pressed="true"] { @apply border-paper bg-paper text-ink; }
 
+  /* Event Organiser's "Event Details" box (single events) */
+  .event-details hr,
+  .event-details [style*="clear"] { @apply hidden; }
+
+  .event-details h4 {
+    @apply m-0 mb-3 font-display text-[24px] font-black uppercase;
+  }
+
+  .event-details ul { @apply m-0 flex list-none flex-col gap-2 p-0; }
+  .event-details li { @apply flex flex-wrap gap-x-2; }
+  .event-details strong { @apply font-semibold text-muted; }
+
   /* ---------- Booking panel (Sirvoy) ---------- */
   .booking-panel {
     @apply flex flex-col gap-3.5 rounded-lg bg-paper p-6 text-ink shadow-[0_20px_50px_rgba(0,0,0,0.35)] md:p-7;
