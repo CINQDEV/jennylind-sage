@@ -15,8 +15,9 @@
 @endphp
 
 @section('hero')
-  <section class="page-band" @if ($heroImage) style="background-image: url('{{ esc_url($heroImage) }}')" @endif>
-    <div class="page-band__shade">
+  <section class="page-band">
+    @include('partials.band-image', ['src' => $heroImage])
+    <div class="page-band__shade relative">
       <div class="container-site flex flex-wrap items-center justify-between gap-12 py-12 md:py-[88px]">
         <div class="max-w-[620px] flex-[1_1_520px]">
           <p class="eyebrow eyebrow--light mb-3.5">{{ __('Stay at the Jenny', 'jennylind') }}</p>

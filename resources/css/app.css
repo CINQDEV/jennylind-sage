@@ -171,7 +171,7 @@
 
   /* ---------- Page header band (inner pages) ---------- */
   .page-band {
-    @apply relative bg-ink bg-cover bg-center text-paper;
+    @apply relative overflow-hidden bg-ink text-paper;
   }
 
   .page-band__shade {
@@ -188,7 +188,7 @@
   }
 
   /* ---------- Hero (homepage) ---------- */
-  .home-hero { @apply relative bg-ink bg-cover bg-center; }
+  .home-hero { @apply relative overflow-hidden bg-ink; }
 
   .home-hero__shade {
     @apply bg-[linear-gradient(180deg,rgba(21,35,46,0.55)_0%,rgba(21,35,46,0.92)_70%)] md:bg-[linear-gradient(90deg,rgba(21,35,46,0.92)_0%,rgba(21,35,46,0.75)_45%,rgba(21,35,46,0.15)_100%)];

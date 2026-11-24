@@ -1,6 +1,7 @@
 {{-- Inner-page header: dark band with the title, over the featured image when there is one. --}}
-<section class="page-band" @if ($heroImage) style="background-image: url('{{ esc_url($heroImage) }}')" @endif>
-  <div class="page-band__shade">
+<section class="page-band">
+  @include('partials.band-image', ['src' => $heroImage])
+  <div class="page-band__shade relative">
     <div class="page-band__inner @yield('band-padding', 'pb-10 md:pb-12')">
       <div class="max-w-4xl">
         @hasSection('eyebrow')

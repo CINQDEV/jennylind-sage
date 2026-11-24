@@ -9,8 +9,9 @@
 @endphp
 
 @section('hero')
-  <section class="home-hero" style="background-image: url('{{ esc_url($heroImage ?: Vite::asset('resources/images/bar-crowd.jpg')) }}')">
-    <div class="home-hero__shade">
+  <section class="home-hero">
+    @include('partials.band-image', ['src' => $heroImage ?: Vite::asset('resources/images/bar-crowd.jpg')])
+    <div class="home-hero__shade relative">
       <div class="container-site flex flex-wrap items-end justify-between gap-10 pt-14 pb-8 md:pt-24 md:pb-[88px]">
         <div class="max-w-[680px] flex-[1_1_560px] text-paper">
           <p class="eyebrow eyebrow--light mb-4">69 High Street · Hastings Old Town</p>
