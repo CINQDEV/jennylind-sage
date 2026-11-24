@@ -1,29 +1,28 @@
 {{--
   Template Name: Contact
-  Oxygen "Contact" (8414): enquiry form and map, with the page content (address,
-  directions) in the right-hand column.
+  Enquiry form and map, with the page content (address, directions) alongside.
 --}}
 @extends('layouts.app')
 
+@section('eyebrow', '69 High Street · Hastings Old Town')
+
 @section('content')
   @while(have_posts()) @php(the_post())
-    <div class="container-site two-col">
-      <div class="two-col__main">
-        <h2 class="mt-[30px]">{{ __('Email us', 'jennylind') }}</h2>
-        <div class="w-full">
-          {!! do_shortcode('[forminator_form id="8842"]') !!}
-        </div>
+    <div class="container-site flex flex-col gap-12 py-12 md:py-16 lg:flex-row">
+      <div class="min-w-0 lg:w-[62%]">
+        <h2 class="mt-0 mb-4 text-[36px] md:text-[48px]">{{ __('Email us', 'jennylind') }}</h2>
+        {!! do_shortcode('[forminator_form id="8842"]') !!}
 
-        <h3 class="mt-[30px]">{{ __('Map', 'jennylind') }}</h3>
+        <h2 class="mt-12 mb-4 text-[36px] md:text-[48px]">{{ __('Map', 'jennylind') }}</h2>
         <iframe
-          class="h-[400px] w-full border-0"
+          class="h-[400px] w-full rounded-lg border-0"
           loading="lazy"
           title="{{ __('Map to The Jenny Lind Inn', 'jennylind') }}"
-          src="https://maps.google.com/maps?q={{ rawurlencode('The Jenny Lind, 69 High St, Hastings, TN34 3EW') }}&z=14&output=embed"
+          src="https://maps.google.com/maps?q={{ rawurlencode('The Jenny Lind, 69 High St, Hastings, TN34 3EW') }}&z=15&output=embed"
         ></iframe>
       </div>
 
-      <aside class="two-col__side two-col__side--ruled entry-content">
+      <aside class="entry-content rounded-lg bg-sand p-6 md:p-8 lg:w-[38%] lg:self-start [&_h2]:mt-0 [&_h2:not(:first-child)]:mt-8 [&_h2]:text-[32px]">
         @php(the_content())
       </aside>
     </div>

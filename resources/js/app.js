@@ -4,27 +4,7 @@ import.meta.glob([
 ]);
 
 /**
- * Sticky header: once the page scrolls past the hero, the overlay header
- * becomes the fixed blue bar (Oxygen "Header v2" sticky row).
- */
-const header = document.querySelector('[data-site-header]');
-const backToTop = document.querySelector('[data-back-to-top]');
-
-const onScroll = () => {
-  const y = window.scrollY;
-  header?.classList.toggle('is-sticky', y > 300);
-  backToTop?.classList.toggle('is-visible', y > 100);
-};
-
-window.addEventListener('scroll', onScroll, { passive: true });
-onScroll();
-
-backToTop?.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-/**
- * Mobile menu (below 1280px the desktop menu is replaced by a hamburger).
+ * Mobile menu.
  */
 const toggle = document.querySelector('[data-menu-toggle]');
 const mobileNav = document.querySelector('[data-mobile-nav]');
@@ -32,4 +12,33 @@ const mobileNav = document.querySelector('[data-mobile-nav]');
 toggle?.addEventListener('click', () => {
   const open = mobileNav?.classList.toggle('is-open');
   toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+});
+
+/**
+ * What's On filters: All / Gigs / Weekly sessions.
+ */
+const filters = document.querySelector('[data-event-filters]');
+const list = document.querySelector('[data-event-list]');
+
+filters?.addEventListener('click', (e) => {
+  const button = e.target.closest('[data-filter]');
+  if (!button || !list) return;
+
+  const kind = button.dataset.filter;
+  filters.querySelectorAll('[data-filter]').forEach((b) => b.setAttribute('aria-pressed', b === button ? 'true' : 'false'));
+
+  let shown = 0;
+  list.querySelectorAll('[data-event-group]').forEach((group) => {
+    let groupShown = 0;
+    group.querySelectorAll('[data-kind]').forEach((row) => {
+      const show = kind === 'all' || row.dataset.kind === kind;
+      row.hidden = !show;
+      groupShown += show ? 1 : 0;
+    });
+    group.hidden = groupShown === 0;
+    shown += groupShown;
+  });
+
+  list.querySelector('[data-event-empty]')?.classList.toggle('hidden', shown > 0);
 });

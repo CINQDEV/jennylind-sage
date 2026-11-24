@@ -19,22 +19,24 @@
 
       @include('sections.header')
 
-      @hasSection('hero')
-        @yield('hero')
-      @else
-        @include('partials.hero')
-      @endif
+      <main id="main">
+        @hasSection('hero')
+          @yield('hero')
+        @else
+          @include('partials.page-band')
+        @endif
 
-      <main id="main" class="site-main">
         @yield('content')
       </main>
 
       @include('sections.footer')
     </div>
 
-    <button type="button" class="back-to-top" data-back-to-top aria-label="{{ __('Back to top', 'jennylind') }}">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
-    </button>
+    @hasSection('action-bar')
+      @yield('action-bar')
+    @else
+      @include('partials.action-bar')
+    @endif
 
     @php(do_action('get_footer'))
     @php(wp_footer())

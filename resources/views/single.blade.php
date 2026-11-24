@@ -1,15 +1,16 @@
 @extends('layouts.app')
 
+@section('eyebrow', get_the_date())
+
 @section('content')
   @while(have_posts()) @php(the_post())
-    <article @php(post_class('container-site two-col'))>
-      <div class="two-col__main entry-content">
-        <p class="text-sm text-blue">{{ get_the_date() }}</p>
+    <div class="container-site flex flex-col gap-12 py-12 md:py-16 lg:flex-row">
+      <article @php(post_class('entry-content min-w-0 lg:w-[68%]'))>
         @php(the_content())
-      </div>
-      <aside class="two-col__side">
+      </article>
+      <aside class="lg:w-[32%]">
         @include('partials.events.side')
       </aside>
-    </article>
+    </div>
   @endwhile
 @endsection

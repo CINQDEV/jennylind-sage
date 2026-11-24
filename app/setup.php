@@ -118,13 +118,3 @@ add_action('init', function () {
     remove_filter('comment_text_rss', 'wp_staticize_emoji');
     remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 });
-
-/**
- * Preload the Paddington display font used by the menu and every heading.
- */
-add_action('wp_head', function () {
-    printf(
-        '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>'."\n",
-        esc_url(Vite::asset('resources/fonts/Paddington.woff2'))
-    );
-}, 1);

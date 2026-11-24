@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-  <div class="container-site px-4 lg:px-0">
+  <div class="container-site py-12 md:py-16">
     @if (! have_posts())
       <p>{{ __('Sorry, no results were found.', 'jennylind') }}</p>
       {!! get_search_form(false) !!}

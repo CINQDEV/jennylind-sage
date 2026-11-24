@@ -1,47 +1,13 @@
-{{--
-  "Whats on" side box (Oxygen reusable "Side events", 8604 / "Whats on side", 8385):
-  the next event as a card, then the following four as compact rows.
---}}
-@php
-  $first = App\events(1);
-  $more = App\events(4, 1);
-@endphp
+{{-- Compact "What's on" list for sidebars (two-column pages, posts). --}}
+@php($upcoming = App\events(5))
 
-<div class="event-box">
-  <a href="{{ home_url('/whats-on/') }}" class="block hover:no-underline">
-    <h3 class="event-box__title">{{ __('whats on', 'jennylind') }}</h3>
-  </a>
-
-  <div class="event-box__list">
-    @foreach ($first as $event)
-      <div class="event-box__item">
-        <div class="event-meta">
-          <span>{{ App\event_start($event, 'D jS M') }}</span>
-          <span>{{ App\event_start($event, 'g:i A') }}</span>
-        </div>
-        <a class="event-image" href="{{ get_permalink($event) }}" aria-hidden="true" tabindex="-1"
-           @if (has_post_thumbnail($event)) style="background-image: url('{{ get_the_post_thumbnail_url($event, 'event-card') }}')" @endif></a>
-        <a class="event-link" href="{{ get_permalink($event) }}">
-          <h3>{!! get_the_title($event) !!}</h3>
-          <p>{{ App\event_excerpt($event) }}</p>
-        </a>
-      </div>
-    @endforeach
-
-    @foreach ($more as $event)
-      <div class="event-box__item">
-        <div class="event-meta">
-          <span>{{ App\event_start($event, 'D jS M') }}</span>
-          <span>{{ App\event_start($event, 'g:i A') }}</span>
-        </div>
-        <a class="event-link" href="{{ get_permalink($event) }}">
-          <h3>{!! get_the_title($event) !!}</h3>
-        </a>
-      </div>
-    @endforeach
-  </div>
-
-  <div class="event-box__more">
-    <a href="{{ home_url('/whats-on/') }}">{{ __('View all events', 'jennylind') }}</a>
-  </div>
+<div class="rounded-lg bg-ink p-6 text-paper">
+  <h2 class="m-0 mb-2 text-[36px]">{{ __("What's on", 'jennylind') }}</h2>
+  @foreach ($upcoming as $event)
+    <a class="flex items-baseline gap-3 border-t border-ink-line py-3 text-paper no-underline hover:text-blush" href="{{ get_permalink($event) }}">
+      <span class="w-[72px] flex-none text-[13px] font-bold tracking-[0.08em] text-blush uppercase">{{ App\event_start($event, 'D j') }}</span>
+      <span class="font-display text-[20px] font-extrabold uppercase" style="line-height: 1.05">{!! get_the_title($event) !!}</span>
+    </a>
+  @endforeach
+  <a class="link-underline mt-3 inline-block text-paper" href="{{ home_url('/whats-on/') }}">{{ __('Full listings', 'jennylind') }} →</a>
 </div>
