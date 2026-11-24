@@ -186,7 +186,12 @@ $created = $skipped = 0;
 
 foreach ($videos as $video) {
     $when = (new DateTimeImmutable($video['created_time']))->setTimezone($tz);
+    $event = jl_matching_event($when);
     $title = jl_video_title($video, $when);
+    // No title on Facebook: name it after the band from that night's gig.
+    if ($event && str_starts_with($title, 'Live at the Jenny')) {
+        $title = html_entity_decode(get_the_title($event), ENT_QUOTES, 'UTF-8');
+    }
     $minutes = isset($video['length']) ? sprintf('%d:%02d', $video['length'] / 60, $video['length'] % 60) : '?';
     $done = jl_already_imported($video['id']);
 
@@ -220,7 +225,7 @@ foreach ($videos as $video) {
     update_post_meta($post_id, 'session_youtube', $link);
     update_post_meta($post_id, 'session_date', $when->format('Ymd'));
     update_post_meta($post_id, 'session_fb_id', $video['id']);
-    if ($event = jl_matching_event($when)) {
+    if ($event) {
         update_post_meta($post_id, 'session_event', $event);
         echo '    linked to the gig: '.html_entity_decode(get_the_title($event), ENT_QUOTES)."\n";
     }
