@@ -371,8 +371,20 @@
     @apply grid grid-cols-1 gap-5 md:grid-cols-2;
   }
 
+  .entry-content .jl-photo-grid > * {
+    @apply mt-0;
+  }
+
   .jl-photo-card {
-    @apply flex min-h-[550px] flex-col justify-end bg-cover bg-center;
+    @apply relative flex min-h-[550px] flex-col justify-end overflow-hidden bg-cover bg-center;
+  }
+
+  .jl-photo-card__img {
+    @apply absolute inset-0 h-full w-full object-cover;
+  }
+
+  .jl-photo-card > :not(.jl-photo-card__img) {
+    @apply relative;
   }
 
   .jl-photo-card .wp-block-group__inner-container,
