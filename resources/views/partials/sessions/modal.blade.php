@@ -8,6 +8,9 @@
       </button>
     </div>
     <div class="aspect-video w-full overflow-hidden rounded-md bg-black" data-session-modal-frame></div>
-    <a class="link-underline mt-4 inline-block text-paper" href="#" data-session-modal-page>{{ __('About this session', 'jennylind') }} →</a>
+    <p class="m-0 mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+      <a class="link-underline text-paper" href="#" data-session-modal-page>{{ __('About this session', 'jennylind') }} →</a>
+      <a class="text-[14px] text-soft underline decoration-1 underline-offset-4 hover:text-paper" href="#" target="_blank" rel="noopener" data-session-modal-watch></a>
+    </p>
   </div>
 </dialog>

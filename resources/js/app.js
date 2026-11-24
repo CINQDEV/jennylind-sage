@@ -99,6 +99,10 @@ if (modal) {
       event.preventDefault();
       modal.querySelector('[data-session-modal-title]').textContent = card.dataset.title;
       modal.querySelector('[data-session-modal-page]').href = card.dataset.page;
+      // Fallback for when a browser or ad blocker stops the embedded player.
+      const watch = modal.querySelector('[data-session-modal-watch]');
+      watch.href = card.dataset.watch || '#';
+      watch.textContent = card.dataset.watch ? `Video not showing? Watch on ${card.dataset.source} ↗` : '';
       // Show the still with a big play button; the video loads when it's pressed.
       const play = document.createElement('button');
       play.type = 'button';
