@@ -28,7 +28,7 @@
   </div>
 
   <div class="container-site flex flex-wrap justify-between gap-4 border-t border-[#2C3F4E] pt-5 pb-8 text-[14px] text-faint">
-    <span>© {{ date('Y') }} The Jenny Lind Inn</span>
+    <span>© {{ date('Y') }} The Jenny Lind Inn · {{ __('Design by', 'jennylind') }} <a class="text-faint underline decoration-1 underline-offset-4 hover:text-paper" href="https://cinq.co.uk" target="_blank" rel="noopener">CINQ<span class="sr-only"> {{ __('(opens in a new tab)', 'jennylind') }}</span></a></span>
     @if (has_nav_menu('legal_navigation'))
       <nav aria-label="{{ __('Legal', 'jennylind') }}">
         {!! wp_nav_menu(['theme_location' => 'legal_navigation', 'container' => false, 'menu_class' => 'm-0 flex list-none flex-wrap gap-x-5 gap-y-1 p-0', 'echo' => false]) !!}

@@ -35,9 +35,7 @@
     </dl>
   </details>
 
-  <div class="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-card-line pt-4 text-[14px]">
+  <div class="border-t border-card-line pt-4 text-[14px]">
     <button type="button" class="calendar-card__link" data-copy="{{ $cal['feed'] }}" data-copied-text="{{ __('Link copied', 'jennylind') }}">{{ __('Copy calendar link', 'jennylind') }}</button>
-    <a class="calendar-card__link" href="{{ $cal['feed'] }}" download>{{ __('Download .ics file', 'jennylind') }}</a>
   </div>
-  <p class="m-0 text-[13px] text-muted">{{ __('The download is a one-off copy and won’t update – subscribe to stay current.', 'jennylind') }}</p>
 </div>
