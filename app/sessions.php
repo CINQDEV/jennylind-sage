@@ -60,8 +60,8 @@ add_action('acf/init', function () {
         'fields' => [
             [
                 'key' => 'field_jl_session_youtube', 'name' => 'session_youtube', 'type' => 'url', 'required' => 1,
-                'label' => __('YouTube link', 'jennylind'),
-                'instructions' => __('Paste the video\'s address from YouTube (Share › Copy link). The thumbnail comes from YouTube unless you set a featured image.', 'jennylind'),
+                'label' => __('Video link (YouTube or Facebook)', 'jennylind'),
+                'instructions' => __('Paste the video\'s address (Share › Copy link). YouTube videos get their thumbnail automatically; for Facebook videos set a featured image. Facebook videos must be public.', 'jennylind'),
             ],
             [
                 'key' => 'field_jl_session_artist', 'name' => 'session_artist', 'type' => 'text',
@@ -88,6 +88,12 @@ add_action('acf/init', function () {
     ]);
 });
 
+/** Is this a Facebook video link (facebook.com/…/videos/…, /watch/?v=, /reel/, fb.watch)? */
+function is_facebook_video(?string $url): bool
+{
+    return (bool) ($url && preg_match('~^https?://((www|m|web)\.)?(facebook\.com|fb\.watch)/~i', $url));
+}
+
 /** YouTube video ID from any normal YouTube link (watch, youtu.be, shorts, live, embed). */
 function youtube_id(?string $url): ?string
 {
@@ -110,12 +116,27 @@ function youtube_id(?string $url): ?string
 function session(\WP_Post|int $post): array
 {
     $post = get_post($post);
-    $video = youtube_id(get_post_meta($post->ID, 'session_youtube', true));
+    $link = (string) get_post_meta($post->ID, 'session_youtube', true);
+    $video = youtube_id($link);
+    $facebook = ! $video && is_facebook_video($link);
     $played = get_post_meta($post->ID, 'session_date', true);
     $played = $played ? \DateTimeImmutable::createFromFormat('Ymd', $played, wp_timezone()) : null;
     $styles = get_the_terms($post, 'session_style') ?: [];
 
-    $thumb = get_the_post_thumbnail_url($post, 'large') ?: ($video ? "https://i.ytimg.com/vi/{$video}/maxresdefault.jpg" : null);
+    $thumb = get_the_post_thumbnail_url($post, 'large')
+        ?: ($video ? "https://i.ytimg.com/vi/{$video}/maxresdefault.jpg" : null)
+        ?: get_the_post_thumbnail_url(get_page_by_path(SESSIONS_PAGE), 'large') ?: null;
+
+    if ($video) {
+        // Privacy-enhanced player: no YouTube cookies until someone presses play.
+        $embed = "https://www.youtube-nocookie.com/embed/{$video}?autoplay=1&rel=0&modestbranding=1";
+        $watch = "https://www.youtube.com/watch?v={$video}";
+    } elseif ($facebook) {
+        $embed = 'https://www.facebook.com/plugins/video.php?href='.rawurlencode($link).'&show_text=false&autoplay=true&width=1280';
+        $watch = $link;
+    } else {
+        $embed = $watch = null;
+    }
 
     return [
         'id' => $post->ID,
@@ -124,9 +145,9 @@ function session(\WP_Post|int $post): array
         'number' => session_number($post->ID),
         'url' => get_permalink($post),
         'video' => $video,
-        // Privacy-enhanced player: no YouTube cookies until someone presses play.
-        'embed' => $video ? "https://www.youtube-nocookie.com/embed/{$video}?autoplay=1&rel=0&modestbranding=1" : null,
-        'watch' => $video ? "https://www.youtube.com/watch?v={$video}" : null,
+        'source' => $video ? 'YouTube' : ($facebook ? 'Facebook' : null),
+        'embed' => $embed,
+        'watch' => $watch,
         'thumb' => $thumb,
         'thumb_fallback' => $video ? "https://i.ytimg.com/vi/{$video}/hqdefault.jpg" : null,
         'date' => $played ? wp_date('j F Y', $played->getTimestamp()) : null,
@@ -219,7 +240,7 @@ add_action('wp_head', function () {
     }
 
     $s = session(get_queried_object());
-    if (! $s['video']) {
+    if (! $s['embed']) {
         return;
     }
 
@@ -228,9 +249,9 @@ add_action('wp_head', function () {
         '@type' => 'VideoObject',
         'name' => $s['title'].' – live at the Jenny Lind, Hastings',
         'description' => $s['excerpt'] ?: sprintf('%s playing live at the Jenny Lind Inn, Hastings Old Town.', $s['artist']),
-        'thumbnailUrl' => [$s['thumb'], $s['thumb_fallback']],
+        'thumbnailUrl' => array_values(array_filter([$s['thumb'], $s['thumb_fallback']])),
         'uploadDate' => $s['date_iso'],
-        'embedUrl' => "https://www.youtube.com/embed/{$s['video']}",
+        'embedUrl' => $s['video'] ? "https://www.youtube.com/embed/{$s['video']}" : $s['embed'],
         'contentUrl' => $s['watch'],
         'publisher' => ['@type' => 'Organization', 'name' => get_bloginfo('name')],
     ];

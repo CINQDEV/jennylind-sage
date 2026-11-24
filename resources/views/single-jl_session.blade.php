@@ -45,7 +45,7 @@
 
       @if ($s['watch'])
         <p class="mt-8 mb-0 flex flex-wrap gap-3">
-          <a class="btn btn-ink" href="{{ $s['watch'] }}" target="_blank" rel="noopener">{{ __('Watch on YouTube', 'jennylind') }}</a>
+          <a class="btn btn-ink" href="{{ $s['watch'] }}" target="_blank" rel="noopener">{{ sprintf(__('Watch on %s', 'jennylind'), $s['source']) }}</a>
           <a class="btn btn-outline" href="{{ App\sessions_url() }}">{{ __('All sessions', 'jennylind') }}</a>
         </p>
       @endif
