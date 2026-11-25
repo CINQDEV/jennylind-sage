@@ -50,7 +50,7 @@ Application::configure()
 |
 */
 
-collect(['setup', 'filters', 'events', 'content', 'sessions'])
+collect(['setup', 'filters', 'events', 'content', 'sessions', 'facebook-sessions'])
     ->each(function ($file) {
         if (! locate_template($file = "app/{$file}.php", true, true)) {
             wp_die(
