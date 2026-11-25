@@ -25,7 +25,8 @@
             @endif
           </div>
           <h3 class="festival-card__name">{{ $f['name'] }}</h3>
-          <p class="festival-card__when">{{ $f['when'] }}</p>
+          <p class="festival-card__when">{{ $f['dates'] }}</p>
+          @if ($f['when'])<p class="m-0 text-[13px] text-soft">{{ $f['when'] }}</p>@endif
           @if ($f['blurb'])<p class="festival-card__blurb">{{ $f['blurb'] }}</p>@endif
           <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-3">
             @if ($f['next'] && $f['jenny'])
@@ -40,8 +41,8 @@
     </ol>
 
     <div class="container-site mt-4 flex items-center justify-between gap-4">
-      <p class="m-0 text-[13px] text-faint">{{ __('Dates are a guide until each festival announces them.', 'jennylind') }}</p>
-      <div class="hidden gap-2 md:flex">
+      <span></span>
+      <div class="hidden gap-2 md:flex" data-festival-nav>
         <button type="button" class="festival-nav" data-festival-prev aria-label="{{ __('Earlier festivals', 'jennylind') }}">←</button>
         <button type="button" class="festival-nav" data-festival-next aria-label="{{ __('Later festivals', 'jennylind') }}">→</button>
       </div>
