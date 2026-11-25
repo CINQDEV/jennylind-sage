@@ -305,7 +305,7 @@
   }
 
   .festival-tile {
-    @apply flex h-full flex-col gap-0.5 rounded-md border border-card-line bg-white px-4 py-3 text-ink no-underline transition-colors;
+    @apply flex h-full flex-col gap-0.5 rounded-md border border-card-line bg-white px-4 py-3.5 text-ink no-underline transition-colors;
   }
 
   a.festival-tile:hover { @apply border-ink text-ink; }
@@ -320,11 +320,11 @@
   .festival-tile--next .festival-tile__month { @apply text-white; }
 
   .festival-tile__name {
-    @apply font-display text-[19px] font-extrabold uppercase;
-    line-height: 1.05;
+    @apply my-0.5 font-display text-[22px] font-extrabold tracking-[0.02em] uppercase md:text-[25px];
+    line-height: 1.08;
   }
 
-  .festival-tile__when { @apply text-[13px] leading-snug text-muted; }
+  .festival-tile__when { @apply text-[14px] leading-snug text-muted; }
   .festival-tile--next .festival-tile__when { @apply text-white/90; }
 
   .festival-tile__jenny { @apply mt-auto pt-1 text-[12px] font-bold text-accent-dark; }
