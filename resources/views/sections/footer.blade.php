@@ -19,7 +19,12 @@
 
       <div class="flex flex-col gap-2">
         <span class="footer-heading">{{ __('Opening hours', 'jennylind') }}</span>
-        <span>@foreach (App\opening_hours() as [$days, $hours]){{ $days }} {{ $hours }}@if (! $loop->last)<br>@endif @endforeach</span>
+        <dl class="m-0 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1">
+          @foreach (App\opening_hours() as [$days, $hours])
+            <dt class="font-semibold text-paper">{{ $days }}</dt>
+            <dd class="m-0">{{ $hours }}</dd>
+          @endforeach
+        </dl>
         <span class="text-[14px] text-faint">Under 18s welcome until 7pm</span>
       </div>
 
