@@ -1,8 +1,14 @@
 <footer class="site-footer">
   <div class="container-site flex flex-wrap justify-between gap-10 pt-16 pb-8">
-    <a href="{{ home_url('/') }}" class="sign-swing flex" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
-      <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="{{ $siteName }}" width="182" height="80" class="h-20 w-auto">
-    </a>
+    <div class="flex flex-col items-center gap-4">
+      <a href="{{ home_url('/') }}" class="sign-swing flex" aria-label="{{ $siteName }} – {{ __('home', 'jennylind') }}">
+        <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="{{ $siteName }}" width="182" height="80" class="h-20 w-auto">
+      </a>
+      <div class="flex justify-center gap-2">
+        <a class="footer-social" href="https://www.facebook.com/jennylindhastings/" target="_blank" rel="noopener">Facebook<span class="sr-only"> {{ __('(opens in a new tab)', 'jennylind') }}</span></a>
+        <a class="footer-social" href="https://www.instagram.com/jennylindinn/" target="_blank" rel="noopener">Instagram<span class="sr-only"> {{ __('(opens in a new tab)', 'jennylind') }}</span></a>
+      </div>
+    </div>
 
     <div class="flex flex-wrap gap-12">
       <div class="flex flex-col gap-2">
@@ -23,8 +29,6 @@
         <a href="{{ App\sessions_url() }}">{{ __('The Jenny Sessions', 'jennylind') }}</a>
         <a href="{{ home_url('/stay/') }}">{{ __('Rooms & booking', 'jennylind') }}</a>
         <a href="{{ home_url('/shanty/') }}">{{ __('Shanty songsheets', 'jennylind') }}</a>
-        <a href="https://www.facebook.com/jennylindhastings/" target="_blank" rel="noopener">Facebook</a>
-        <a href="https://www.instagram.com/jennylindinn/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
   </div>

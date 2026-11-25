@@ -330,6 +330,10 @@
   .festival-tile__jenny { @apply mt-auto pt-1 text-[12px] font-bold text-accent-dark; }
   .festival-tile--next .festival-tile__jenny { @apply text-white; }
 
+  .footer-social {
+    @apply rounded-full border border-ink-line px-3.5 py-1 text-[13px] font-semibold text-paper no-underline transition-colors hover:border-blush hover:text-blush;
+  }
+
   /* Homepage: regular nights + latest Jenny Session (a quiet strip) */
   .weekly-panel {
     @apply mt-6 grid overflow-hidden rounded-lg border border-card-line bg-sand text-ink;
