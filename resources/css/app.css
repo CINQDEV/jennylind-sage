@@ -297,37 +297,37 @@
 
   /* What's On: Hastings festival year (compact grid, no scrolling) */
   .festival-band {
-    @apply bg-ink py-10 md:py-12;
+    @apply border-t border-line bg-sand py-10 md:py-12;
   }
 
   .festival-grid {
-    @apply m-0 grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-3 lg:grid-cols-5;
+    @apply m-0 grid list-none grid-cols-2 gap-2.5 p-0 lg:grid-cols-3;
   }
 
   .festival-tile {
-    @apply flex h-full flex-col gap-0.5 rounded-md border border-ink-line bg-ink-2 px-3.5 py-3 text-paper no-underline transition-colors;
+    @apply flex h-full flex-col gap-0.5 rounded-md border border-card-line bg-white px-4 py-3 text-ink no-underline transition-colors;
   }
 
-  a.festival-tile:hover { @apply border-blush text-paper; }
+  a.festival-tile:hover { @apply border-ink text-ink; }
 
-  .festival-tile--next { @apply border-accent bg-accent; }
-  a.festival-tile--next:hover { @apply border-white; }
+  .festival-tile--next { @apply border-accent bg-accent text-white; }
+  a.festival-tile--next:hover { @apply border-accent-dark bg-accent-dark text-white; }
 
   .festival-tile__month {
-    @apply text-[11px] font-bold tracking-[0.14em] text-blush uppercase;
+    @apply text-[11px] font-bold tracking-[0.14em] text-accent-dark uppercase;
   }
 
   .festival-tile--next .festival-tile__month { @apply text-white; }
 
   .festival-tile__name {
-    @apply font-display text-[18px] font-extrabold uppercase;
+    @apply font-display text-[19px] font-extrabold uppercase;
     line-height: 1.05;
   }
 
-  .festival-tile__when { @apply text-[13px] leading-snug text-soft; }
+  .festival-tile__when { @apply text-[13px] leading-snug text-muted; }
   .festival-tile--next .festival-tile__when { @apply text-white/90; }
 
-  .festival-tile__jenny { @apply mt-auto pt-1 text-[12px] font-bold text-blush; }
+  .festival-tile__jenny { @apply mt-auto pt-1 text-[12px] font-bold text-accent-dark; }
   .festival-tile--next .festival-tile__jenny { @apply text-white; }
 
   /* Homepage: regular nights + latest Jenny Session */

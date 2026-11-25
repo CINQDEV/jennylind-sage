@@ -5,8 +5,8 @@
   <section class="festival-band" aria-labelledby="festivals-heading">
     <div class="container-site">
       <div class="mb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-2">
-        <h2 id="festivals-heading" class="m-0 text-[28px] text-paper md:text-[34px]">{{ __('Hastings festival year', 'jennylind') }}</h2>
-        <p class="m-0 text-[14px] text-soft">{{ __("The Old Town's big weekends – book a room early.", 'jennylind') }}</p>
+        <h2 id="festivals-heading" class="m-0 text-[28px] md:text-[34px]">{{ __('Hastings festival year', 'jennylind') }}</h2>
+        <p class="m-0 text-[14px] text-muted">{{ __("The Old Town's big weekends – book a room early.", 'jennylind') }}</p>
       </div>
 
       <ol class="festival-grid">
