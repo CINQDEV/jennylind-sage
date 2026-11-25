@@ -177,7 +177,7 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div>
             <h3 class="mt-0 mb-1.5 text-[24px] font-extrabold">{{ __('Opening hours', 'jennylind') }}</h3>
-            <p class="m-0 text-muted">Sun–Thu 12pm–11pm<br>Fri &amp; Sat 12pm–12am<br>Under 18s welcome until 7pm</p>
+            <p class="m-0 text-muted">Mon–Wed 1pm–11pm<br>Thu 12pm–11pm<br>Fri–Sun 12pm–12am<br>Under 18s welcome until 7pm</p>
           </div>
           <div>
             <h3 class="mt-0 mb-1.5 text-[24px] font-extrabold">{{ __('Getting here', 'jennylind') }}</h3>
