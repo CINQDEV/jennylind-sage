@@ -142,19 +142,3 @@ filters?.addEventListener('click', (event) => {
     card.hidden = chip.dataset.filter !== '' && !card.dataset.styles.split(' ').includes(chip.dataset.filter);
   });
 });
-
-/**
- * Festival strip: arrow buttons scroll it a card at a time.
- */
-const strip = document.querySelector('[data-festival-strip]');
-
-if (strip) {
-  const step = () => (strip.querySelector('li')?.offsetWidth || 280) + 16;
-  // Only show the arrows when there's more than fits.
-  const nav = document.querySelector('[data-festival-next]')?.parentElement;
-  const fit = () => nav?.classList.toggle('invisible', strip.scrollWidth <= strip.clientWidth + 2);
-  fit();
-  window.addEventListener('resize', fit);
-  document.querySelector('[data-festival-prev]')?.addEventListener('click', () => strip.scrollBy({ left: -step(), behavior: 'smooth' }));
-  document.querySelector('[data-festival-next]')?.addEventListener('click', () => strip.scrollBy({ left: step(), behavior: 'smooth' }));
-}

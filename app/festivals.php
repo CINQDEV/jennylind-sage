@@ -1,22 +1,18 @@
 <?php
 
 /**
- * Hastings festival year: the town's annual festivals, shown as a strip on
- * What's On. Only festivals with a confirmed date that hasn't passed are
- * shown. Manage them in wp-admin › Events › Hastings festivals, which starts
- * pre-filled with the researched list: add the dates as each is announced.
+ * Hastings festival year: the town's annual festivals, shown as a compact
+ * grid on What's On, from this month round the year. Each shows its usual
+ * timing, or its exact dates once you add them. Manage them in wp-admin ›
+ * Events › Hastings festivals (pre-filled with the researched list).
  */
 
 namespace App;
 
-/**
- * Researched list (Nov 2026), used to pre-fill the admin list once. Only
- * entries with a confirmed start date appear on the site.
- */
+/** Researched list (Nov 2026), used to pre-fill the admin list once. */
 function festival_defaults(): array
 {
     return [
-        ['name' => 'Le Grand Mardi Gras Ball', 'month' => 2, 'start' => '20270206', 'end' => '', 'when' => 'White Rock Theatre, 7.30pm – part of Hastings Fat Tuesday', 'blurb' => "The Saturday-night party of the UK's biggest Mardi Gras, with DJ Fat Tony, She's Got Brass and King Size Slim.", 'url' => 'https://hastingsfattuesday.co.uk/', 'jenny' => false],
         ['name' => 'Hastings Fat Tuesday', 'month' => 2, 'when' => 'Five days up to Shrove Tuesday (9 Feb in 2027)', 'blurb' => "The UK's biggest Mardi Gras: hundreds of free gigs, the umbrella parade and the Fat Tuesday Tour round the Old Town pubs.", 'url' => 'https://hastingsfattuesday.co.uk/', 'jenny' => false],
         ['name' => 'Jack in the Green', 'month' => 5, 'when' => 'May Day bank holiday weekend', 'blurb' => 'Four days of Morris, drums and giants, ending in the Monday procession and the slaying of the Jack.', 'url' => 'https://hastingstraditionaljackinthegreen.co.uk/', 'jenny' => false],
         ['name' => 'Midsummer Fish Fest', 'month' => 6, 'when' => 'Late June weekend', 'blurb' => 'Local catch, cookery demos and live music on the Stade, yards from the fishing beach.', 'url' => 'https://www.visit1066country.com/whats-on/hastings-midsummer-fish-festival-p1058561', 'jenny' => false],
@@ -31,45 +27,52 @@ function festival_defaults(): array
 }
 
 /**
- * Festivals with a confirmed date still to come, soonest first; the first is
- * marked "next".
+ * All festivals, from this month round the year (this month's count as gone
+ * after the 15th). Exact dates replace the usual timing when they're set.
  *
- * @return array<int, array{name:string, when:string, dates:string, blurb:string, url:string, jenny:bool, next:bool, month_label:string}>
+ * @return array<int, array{name:string, when:string, url:string, jenny:bool, next:bool, month_label:string}>
  */
 function festivals(): array
 {
     seed_festivals();
     $rows = function_exists('get_field') ? (get_field('jl_festivals', 'option') ?: []) : [];
+    $rows = $rows ?: festival_defaults();
+    $months = array_column(festival_defaults(), 'month', 'name');
     $tz = wp_timezone();
-    $today = (new \DateTimeImmutable('today', $tz))->format('Ymd');
+    $now = (int) wp_date('n');
+    $late = (int) wp_date('j') > 15;
     $list = [];
 
     foreach ($rows as $r) {
         $start = (string) ($r['start'] ?? '');
         $end = (string) ($r['end'] ?? '') ?: $start;
-        if (! $start || $end < $today) {
-            continue; // not confirmed yet, or over
+        $month = (int) ($r['month'] ?? 0) ?: (int) ($months[$r['name']] ?? 0);
+        $when = (string) ($r['when'] ?? '');
+
+        if ($start) {
+            $s = \DateTimeImmutable::createFromFormat('Ymd', $start, $tz);
+            $e = \DateTimeImmutable::createFromFormat('Ymd', $end, $tz);
+            $month = (int) $s->format('n');
+            $when = $start === $end
+                ? wp_date('D j M', $s->getTimestamp())
+                : wp_date($s->format('Ym') === $e->format('Ym') ? 'j' : 'j M', $s->getTimestamp()).'–'.wp_date('j M', $e->getTimestamp());
+        }
+        if (! $month) {
+            continue;
         }
 
-        $s = \DateTimeImmutable::createFromFormat('Ymd', $start, $tz);
-        $e = \DateTimeImmutable::createFromFormat('Ymd', $end, $tz);
-        $dates = $start === $end
-            ? wp_date('D j M Y', $s->getTimestamp())
-            : wp_date($s->format('Ym') === $e->format('Ym') ? 'D j' : 'D j M', $s->getTimestamp()).' – '.wp_date('D j M Y', $e->getTimestamp());
-
+        $offset = ($month - $now + 12) % 12;
         $list[] = [
-            'sort' => $start,
+            'sort' => [($offset === 0 && $late) ? 12 : $offset, $start ?: '99', (string) $r['name']],
             'name' => (string) $r['name'],
-            'dates' => $dates,
-            'when' => (string) ($r['when'] ?? ''),
-            'blurb' => (string) ($r['blurb'] ?? ''),
+            'when' => $when,
             'url' => (string) ($r['url'] ?? ''),
             'jenny' => ! empty($r['jenny']),
-            'month_label' => wp_date('M', $s->getTimestamp()),
+            'month_label' => wp_date('M', mktime(0, 0, 0, $month, 1)),
         ];
     }
 
-    usort($list, fn ($a, $b) => strcmp($a['sort'], $b['sort']));
+    usort($list, fn ($a, $b) => $a['sort'] <=> $b['sort']);
     foreach ($list as $k => &$f) {
         $f['next'] = $k === 0;
     }
@@ -80,12 +83,19 @@ function festivals(): array
 /** Pre-fill the admin list with the researched festivals, once. */
 function seed_festivals(): void
 {
-    if (get_option('jl_festivals_seeded') || ! function_exists('update_field') || get_field('jl_festivals', 'option')) {
+    // v2 replaces the first pre-fill (which had no months), unless edited since.
+    if (get_option('jl_festivals_seeded') === '2' || ! function_exists('update_field')) {
+        return;
+    }
+    if (! get_option('jl_festivals_seeded') && get_field('jl_festivals', 'option')) {
+        update_option('jl_festivals_seeded', '2', false);
+
         return;
     }
 
     $rows = array_map(fn ($f) => [
         'name' => $f['name'],
+        'month' => $f['month'],
         'start' => $f['start'] ?? '',
         'end' => $f['end'] ?? '',
         'when' => $f['when'],
@@ -95,7 +105,7 @@ function seed_festivals(): void
     ], festival_defaults());
 
     update_field('field_jl_festivals', $rows, 'option');
-    update_option('jl_festivals_seeded', 1, false);
+    update_option('jl_festivals_seeded', '2', false);
 }
 
 add_action('admin_init', __NAMESPACE__.'\\seed_festivals');
@@ -112,6 +122,11 @@ add_action('acf/init', function () {
         'capability' => 'edit_pages',
     ]);
 
+    $months = [];
+    foreach (range(1, 12) as $m) {
+        $months[$m] = wp_date('F', mktime(0, 0, 0, $m, 1));
+    }
+
     acf_add_local_field_group([
         'key' => 'group_jl_festivals',
         'title' => __('Hastings festival year (What\'s On page)', 'jennylind'),
@@ -121,14 +136,15 @@ add_action('acf/init', function () {
             'name' => 'jl_festivals',
             'type' => 'repeater',
             'label' => __('Festivals', 'jennylind'),
-            'instructions' => __('Only festivals with a start date are shown on the site, and each one drops off once it\'s over. Add the dates as they\'re announced.', 'jennylind'),
+            'instructions' => __('Shown from this month round the year. "When" is shown until you add exact dates, which then replace it.', 'jennylind'),
             'layout' => 'block',
             'button_label' => __('Add festival', 'jennylind'),
             'sub_fields' => [
                 ['key' => 'field_jl_fest_name', 'name' => 'name', 'type' => 'text', 'label' => __('Name', 'jennylind'), 'required' => 1, 'wrapper' => ['width' => 40]],
-                ['key' => 'field_jl_fest_start', 'name' => 'start', 'type' => 'date_picker', 'label' => __('Starts (confirmed)', 'jennylind'), 'display_format' => 'j F Y', 'return_format' => 'Ymd', 'first_day' => 1, 'wrapper' => ['width' => 30]],
-                ['key' => 'field_jl_fest_end', 'name' => 'end', 'type' => 'date_picker', 'label' => __('Ends', 'jennylind'), 'display_format' => 'j F Y', 'return_format' => 'Ymd', 'first_day' => 1, 'instructions' => __('Leave blank for one day', 'jennylind'), 'wrapper' => ['width' => 30]],
-                ['key' => 'field_jl_fest_when', 'name' => 'when', 'type' => 'text', 'label' => __('Extra detail (optional)', 'jennylind'), 'placeholder' => 'Stade Open Space, from 11am', 'instructions' => __('Usual timing is noted here for festivals without dates yet.', 'jennylind')],
+                ['key' => 'field_jl_fest_month', 'name' => 'month', 'type' => 'select', 'label' => __('Month', 'jennylind'), 'choices' => $months, 'wrapper' => ['width' => 20]],
+                ['key' => 'field_jl_fest_start', 'name' => 'start', 'type' => 'date_picker', 'label' => __('Starts (once confirmed)', 'jennylind'), 'display_format' => 'j F Y', 'return_format' => 'Ymd', 'first_day' => 1, 'wrapper' => ['width' => 20]],
+                ['key' => 'field_jl_fest_end', 'name' => 'end', 'type' => 'date_picker', 'label' => __('Ends', 'jennylind'), 'display_format' => 'j F Y', 'return_format' => 'Ymd', 'first_day' => 1, 'instructions' => __('Blank for one day', 'jennylind'), 'wrapper' => ['width' => 20]],
+                ['key' => 'field_jl_fest_when', 'name' => 'when', 'type' => 'text', 'label' => __('When (usual timing)', 'jennylind'), 'placeholder' => 'Late June weekend'],
                 ['key' => 'field_jl_fest_blurb', 'name' => 'blurb', 'type' => 'textarea', 'rows' => 2, 'label' => __('One line about it', 'jennylind')],
                 ['key' => 'field_jl_fest_url', 'name' => 'url', 'type' => 'url', 'label' => __('Festival website', 'jennylind'), 'wrapper' => ['width' => 70]],
                 ['key' => 'field_jl_fest_jenny', 'name' => 'jenny', 'type' => 'true_false', 'ui' => 1, 'label' => __('The Jenny takes part', 'jennylind'), 'wrapper' => ['width' => 30]],
