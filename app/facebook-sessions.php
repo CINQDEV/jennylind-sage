@@ -49,17 +49,18 @@ function facebook_page(?string $page_id = null): ?array
     return $pages ? reset($pages) : null;
 }
 
-/** Already imported (or binned) this Facebook video? */
-function facebook_video_imported(string $fb_id): bool
+/** The session already made from this Facebook video (including binned ones), if any. */
+function facebook_video_session(string $fb_id): ?\WP_Post
 {
-    return (bool) get_posts([
+    $posts = get_posts([
         'post_type' => 'jl_session',
         'post_status' => ['publish', 'draft', 'pending', 'private', 'future', 'trash'],
         'numberposts' => 1,
-        'fields' => 'ids',
         'meta_key' => 'session_fb_id',
         'meta_value' => $fb_id,
     ]);
+
+    return $posts[0] ?? null;
 }
 
 /** The gig on the day it was posted (or the evening before). */
@@ -140,7 +141,14 @@ function import_facebook_sessions(array $o = []): array
         if (! $all && ! has_sessions_tag($text)) {
             continue;
         }
-        if (facebook_video_imported($video['id'])) {
+        if ($existing = facebook_video_session($video['id'])) {
+            // Tagged after it was binned (e.g. by the clear-out): bring it back.
+            if (! $all && $existing->post_status === 'trash' && ! $list_only) {
+                wp_untrash_post($existing->ID);
+                wp_update_post(['ID' => $existing->ID, 'post_status' => 'publish']);
+                update_post_meta($existing->ID, 'session_tagged', 1);
+                $log[] = "{$day}  restored from the bin: ".html_entity_decode($existing->post_title, ENT_QUOTES);
+            }
             continue;
         }
 
@@ -188,6 +196,9 @@ function import_facebook_sessions(array $o = []): array
         update_post_meta($post_id, 'session_youtube', $link);
         update_post_meta($post_id, 'session_date', $when->format('Ymd'));
         update_post_meta($post_id, 'session_fb_id', $video['id']);
+        if (! $all) {
+            update_post_meta($post_id, 'session_tagged', 1);
+        }
         if ($event) {
             update_post_meta($post_id, 'session_event', $event);
         }
