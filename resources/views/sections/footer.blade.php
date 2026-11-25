@@ -23,6 +23,7 @@
         <a href="{{ home_url('/stay/') }}">{{ __('Rooms & booking', 'jennylind') }}</a>
         <a href="{{ home_url('/shanty/') }}">{{ __('Shanty songsheets', 'jennylind') }}</a>
         <a href="https://www.facebook.com/jennylindhastings/" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://www.instagram.com/jennylindinn/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
   </div>
