@@ -81,6 +81,8 @@
     </aside>
   </section>
 
+  @include('partials.festivals')
+
   @while(have_posts()) @php(the_post())
     @if (trim(wp_strip_all_tags(get_the_content())))
       <div class="container-site entry-content pb-16">

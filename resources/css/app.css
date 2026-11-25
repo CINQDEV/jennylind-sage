@@ -295,6 +295,61 @@
     @apply flex flex-col gap-3.5 rounded-lg bg-paper p-6 text-ink shadow-[0_20px_50px_rgba(0,0,0,0.35)] md:p-7;
   }
 
+  /* What's On: Hastings festival year strip */
+  .festival-band {
+    @apply bg-ink py-16 md:py-20;
+  }
+
+  .festival-strip {
+    @apply m-0 flex list-none snap-x snap-mandatory gap-4 overflow-x-auto p-0 pb-2;
+    padding-inline: max(1.25rem, calc((100vw - 1280px) / 2 + 1.5rem));
+    scroll-padding-inline: max(1.25rem, calc((100vw - 1280px) / 2 + 1.5rem));
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-line) transparent;
+  }
+
+  .festival-card {
+    @apply flex w-[78vw] max-w-[300px] flex-none snap-start flex-col gap-1.5 rounded-lg border border-ink-line bg-ink-2 p-5 text-paper sm:w-[280px];
+  }
+
+  .festival-card--next {
+    @apply border-accent bg-accent;
+  }
+
+  .festival-card__month {
+    @apply font-display text-[34px] font-extrabold uppercase text-blush;
+    line-height: 1;
+  }
+
+  .festival-card--next .festival-card__month { @apply text-white; }
+
+  .festival-card__flag {
+    @apply rounded-sm bg-paper px-2 py-1 text-[11px] font-bold tracking-[0.12em] text-accent-dark uppercase;
+  }
+
+  .festival-card__flag--jenny { @apply bg-blush text-ink; }
+
+  .festival-card__name {
+    @apply m-0 mt-2 font-display text-[26px] font-extrabold uppercase;
+    line-height: 1;
+  }
+
+  .festival-card__when { @apply m-0 text-[14px] font-bold text-blush; }
+  .festival-card--next .festival-card__when { @apply text-white; }
+
+  .festival-card__blurb { @apply m-0 text-[14px] leading-snug text-soft; }
+  .festival-card--next .festival-card__blurb { @apply text-white/90; }
+
+  .festival-card__link {
+    @apply text-[14px] font-bold text-paper underline decoration-1 underline-offset-4 hover:text-blush;
+  }
+
+  .festival-card--next .festival-card__link { @apply text-white hover:text-ink; }
+
+  .festival-nav {
+    @apply flex size-10 cursor-pointer items-center justify-center rounded-full border border-ink-line bg-transparent text-[18px] text-paper hover:border-paper;
+  }
+
   /* Homepage: regular nights + latest Jenny Session */
   .weekly-panel {
     @apply mt-6 grid overflow-hidden rounded-lg bg-ink text-paper;
