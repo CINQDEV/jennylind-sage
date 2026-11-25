@@ -159,7 +159,8 @@ function opening_hours(): array
     return [
         ['Mon–Wed', '1pm–11pm'],
         ['Thu', '12pm–11pm'],
-        ['Fri–Sun', '12pm–12am'],
+        ['Fri–Sat', '12pm–12am'],
+        ['Sun', '12pm–11pm'],
     ];
 }
 
