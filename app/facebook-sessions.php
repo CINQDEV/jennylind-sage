@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Jenny Sessions from Facebook, picked with a hashtag.
+ * Jenny Sessions from Facebook and Instagram, picked with a hashtag.
  *
- * Put #JennySessions in the text of a Facebook video post and it becomes a
+ * Put #JennySessions in the caption of a Facebook or Instagram video and it becomes a
  * published Jenny Session on the website: named after the band from that
  * night's gig, with the post text as the write-up and the video's thumbnail.
  * Videos without the tag are ignored.
@@ -218,7 +218,149 @@ function import_facebook_sessions(array $o = []): array
     }
 
     if (! $list_only) {
-        $log[] = $created ? "{$created} new session(s) ".($all ? 'imported as drafts.' : 'published.') : 'No new '.($all ? '' : 'tagged ').'videos.';
+        $log[] = 'Facebook: '.($created ? "{$created} new session(s) ".($all ? 'imported as drafts.' : 'published.') : 'no new '.($all ? '' : 'tagged ').'videos.');
+    }
+
+    // Instagram, if the page has a linked Instagram account.
+    return array_merge($log, import_instagram_sessions($page, $o));
+}
+
+/** The session already made from this Instagram post, if any (including binned). */
+function instagram_post_session(string $ig_id): ?\WP_Post
+{
+    $posts = get_posts([
+        'post_type' => 'jl_session',
+        'post_status' => ['publish', 'draft', 'pending', 'private', 'future', 'trash'],
+        'numberposts' => 1,
+        'meta_key' => 'session_ig_id',
+        'meta_value' => $ig_id,
+    ]);
+
+    return $posts[0] ?? null;
+}
+
+/**
+ * Tagged Instagram videos/reels from the Instagram account linked to the
+ * Facebook page. Needs the connection to include Instagram access; if it
+ * doesn't, this says so and the Facebook part still works.
+ *
+ * @return string[] log lines
+ */
+function import_instagram_sessions(array $page, array $o = []): array
+{
+    $limit = max(1, (int) ($o['limit'] ?? 50));
+    $list_only = ! empty($o['list']);
+    $token = $page['access_token'];
+
+    $get = function (string $url) {
+        $response = wp_remote_get($url, ['timeout' => 30]);
+        if (is_wp_error($response)) {
+            return ['error' => ['message' => $response->get_error_message()]];
+        }
+
+        return json_decode(wp_remote_retrieve_body($response), true) ?: [];
+    };
+
+    $account = $get(GRAPH.rawurlencode($page['id']).'?'.http_build_query(['fields' => 'instagram_business_account{id,username}', 'access_token' => $token]));
+    if (! empty($account['error'])) {
+        return ["Instagram: couldn't check for a linked account (".($account['error']['message'] ?? 'error').')'];
+    }
+    $ig = $account['instagram_business_account'] ?? null;
+    if (! $ig) {
+        return ["Instagram: no Instagram account is linked to the Facebook page, or the connection can't see it. Link them in Meta Business Suite › Settings, then reconnect Facebook in wp-admin › Facebook Import › Settings (accepting the Instagram permissions)."];
+    }
+
+    $url = GRAPH.rawurlencode($ig['id']).'/media?'.http_build_query([
+        'fields' => 'id,caption,media_type,media_product_type,permalink,thumbnail_url,timestamp',
+        'limit' => min(50, $limit),
+        'access_token' => $token,
+    ]);
+
+    $media = [];
+    while ($url && count($media) < $limit) {
+        $body = $get($url);
+        if (! empty($body['error'])) {
+            return ['Instagram: '.($body['error']['message'] ?? 'error').' – reconnect Facebook in wp-admin › Facebook Import › Settings and accept the Instagram permissions.'];
+        }
+        array_push($media, ...($body['data'] ?? []));
+        $url = $body['paging']['next'] ?? null;
+    }
+
+    $tz = wp_timezone();
+    $log = [];
+    $created = 0;
+
+    foreach (array_slice($media, 0, $limit) as $item) {
+        if (($item['media_type'] ?? '') !== 'VIDEO' || ! has_sessions_tag((string) ($item['caption'] ?? ''))) {
+            continue;
+        }
+
+        $when = (new \DateTimeImmutable($item['timestamp']))->setTimezone($tz);
+        $day = $when->format('Y-m-d');
+
+        if ($existing = instagram_post_session($item['id'])) {
+            if ($existing->post_status === 'trash' && ! $list_only) {
+                wp_untrash_post($existing->ID);
+                wp_update_post(['ID' => $existing->ID, 'post_status' => 'publish']);
+                $log[] = "{$day}  Instagram, restored from the bin: ".html_entity_decode($existing->post_title, ENT_QUOTES);
+            }
+            continue;
+        }
+
+        $event = gig_before($when);
+        $caption = strip_sessions_tag((string) ($item['caption'] ?? ''));
+        $title = $event ? html_entity_decode(get_the_title($event), ENT_QUOTES, 'UTF-8') : '';
+        if ($title === '') {
+            $line = trim(preg_replace('/#\w+/u', '', strtok($caption, "\n") ?: ''));
+            $title = $line !== '' ? wp_trim_words($line, 9, '…') : 'Live at the Jenny – '.wp_date('j F Y', $when->getTimestamp());
+        }
+
+        // Same night already imported from a Facebook cross-post? Don't double up.
+        $twin = get_posts(['post_type' => 'jl_session', 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids', 'title' => $title,
+            'meta_query' => [['key' => 'session_date', 'value' => $when->format('Ymd')], ['key' => 'session_fb_id', 'compare' => 'EXISTS']]]);
+        if ($twin) {
+            continue;
+        }
+
+        if ($list_only) {
+            $log[] = "{$day}  Instagram, would add: {$title}";
+            continue;
+        }
+
+        $post_id = wp_insert_post([
+            'post_type' => 'jl_session',
+            'post_status' => 'publish',
+            'post_title' => $title,
+            'post_date' => min($when, new \DateTimeImmutable('now', $tz))->format('Y-m-d H:i:s'),
+            'post_content' => $caption !== '' ? "<!-- wp:paragraph -->\n<p>".nl2br(esc_html($caption))."</p>\n<!-- /wp:paragraph -->" : '',
+        ], true);
+        if (is_wp_error($post_id)) {
+            $log[] = "{$day}  Instagram, could not add {$title}: ".$post_id->get_error_message();
+            continue;
+        }
+
+        update_post_meta($post_id, 'session_youtube', $item['permalink']);
+        update_post_meta($post_id, 'session_date', $when->format('Ymd'));
+        update_post_meta($post_id, 'session_ig_id', $item['id']);
+        update_post_meta($post_id, 'session_tagged', 1);
+        if ($event) {
+            update_post_meta($post_id, 'session_event', $event);
+        }
+
+        if (! empty($item['thumbnail_url'])) {
+            $tmp = download_url($item['thumbnail_url'], 30);
+            if (! is_wp_error($tmp)) {
+                $attachment = media_handle_sideload(['name' => "instagram-{$item['id']}.jpg", 'tmp_name' => $tmp], $post_id, $title);
+                is_wp_error($attachment) ? @unlink($tmp) : set_post_thumbnail($post_id, $attachment);
+            }
+        }
+
+        $created++;
+        $log[] = "{$day}  Instagram, added: {$title}".($event ? '' : ' (no gig that night – check the name)');
+    }
+
+    if (! $list_only) {
+        $log[] = 'Instagram (@'.($ig['username'] ?? '?').'): '.($created ? "{$created} new session(s) published." : 'no new tagged videos.');
     }
 
     return $log;

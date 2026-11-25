@@ -3,7 +3,7 @@
   Facebook (and their cookies) only load when someone wants to watch.
 --}}
 @if ($s['embed'])
-  <div class="session-player" data-player data-embed="{{ $s['embed'] }}" data-title="{{ $s['title'] }}">
+  <div @class(['session-player', 'session-player--portrait' => $s['portrait']]) data-player data-embed="{{ $s['embed'] }}" data-title="{{ $s['title'] }}">
     <button type="button" class="session-player__button" aria-label="{{ sprintf(__('Play %s', 'jennylind'), $s['title']) }}">
       @include('partials.sessions.thumb', ['s' => $s, 'size' => 'lg', 'eager' => true])
     </button>

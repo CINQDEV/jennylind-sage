@@ -120,6 +120,7 @@ if (modal) {
       play.addEventListener('click', () => {
         frameBox.replaceChildren(iframeFor(card.dataset.embed, card.dataset.title));
       });
+      frameBox.classList.toggle('is-portrait', card.hasAttribute('data-portrait'));
       frameBox.replaceChildren(play);
       modal.showModal();
       play.focus();

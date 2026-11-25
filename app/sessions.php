@@ -60,8 +60,8 @@ add_action('acf/init', function () {
         'fields' => [
             [
                 'key' => 'field_jl_session_youtube', 'name' => 'session_youtube', 'type' => 'url', 'required' => 1,
-                'label' => __('Video link (YouTube or Facebook)', 'jennylind'),
-                'instructions' => __('Paste the video\'s address (Share › Copy link). YouTube videos get their thumbnail automatically; for Facebook videos set a featured image. Facebook videos must be public.', 'jennylind'),
+                'label' => __('Video link (YouTube, Facebook or Instagram)', 'jennylind'),
+                'instructions' => __('Paste the video\'s address (Share › Copy link). YouTube videos get their thumbnail automatically; for Facebook and Instagram set a featured image. Facebook and Instagram posts must be public.', 'jennylind'),
             ],
             [
                 'key' => 'field_jl_session_artist', 'name' => 'session_artist', 'type' => 'text',
@@ -117,6 +117,16 @@ function facebook_embeddable(string $link): ?bool
     return ! preg_match("/can't be embedded|may no longer exist|>Video Unavailable</", $html);
 }
 
+/** Instagram post/reel link as [type, shortcode], or null. */
+function instagram_post(?string $url): ?array
+{
+    if ($url && preg_match('~instagram\.com/(?:[A-Za-z0-9_.]+/)?(reel|reels|p|tv)/([A-Za-z0-9_-]+)~i', $url, $m)) {
+        return [strtolower($m[1]) === 'reels' ? 'reel' : strtolower($m[1]), $m[2]];
+    }
+
+    return null;
+}
+
 /** YouTube video ID from any normal YouTube link (watch, youtu.be, shorts, live, embed). */
 function youtube_id(?string $url): ?string
 {
@@ -142,6 +152,7 @@ function session(\WP_Post|int $post): array
     $link = (string) get_post_meta($post->ID, 'session_youtube', true);
     $video = youtube_id($link);
     $facebook = ! $video && is_facebook_video($link);
+    $instagram = ! $video && ! $facebook ? instagram_post($link) : null;
     $played = get_post_meta($post->ID, 'session_date', true);
     $played = $played ? \DateTimeImmutable::createFromFormat('Ymd', $played, wp_timezone()) : null;
     $styles = get_the_terms($post, 'session_style') ?: [];
@@ -157,6 +168,10 @@ function session(\WP_Post|int $post): array
     } elseif ($facebook) {
         $embed = 'https://www.facebook.com/plugins/video.php?href='.rawurlencode($link).'&show_text=false&autoplay=true&width=1280';
         $watch = $link;
+    } elseif ($instagram) {
+        [$type, $code] = $instagram;
+        $embed = "https://www.instagram.com/{$type}/{$code}/embed/";
+        $watch = "https://www.instagram.com/{$type}/{$code}/";
     } else {
         $embed = $watch = null;
     }
@@ -168,7 +183,9 @@ function session(\WP_Post|int $post): array
         'number' => session_number($post->ID),
         'url' => get_permalink($post),
         'video' => $video,
-        'source' => $video ? 'YouTube' : ($facebook ? 'Facebook' : null),
+        'source' => $video ? 'YouTube' : ($facebook ? 'Facebook' : ($instagram ? 'Instagram' : null)),
+        // Instagram's player is portrait (it carries the post header and caption).
+        'portrait' => (bool) $instagram,
         'embed' => $embed,
         'watch' => $watch,
         'thumb' => $thumb,

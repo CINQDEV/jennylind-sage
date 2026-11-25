@@ -97,7 +97,7 @@
         </div>
         @if ($session)
           <a class="weekly-session" href="{{ $session['url'] }}"
-            @if ($session['embed']) data-session-open data-embed="{{ $session['embed'] }}" data-title="{{ $session['title'] }}" data-page="{{ $session['url'] }}" data-thumb="{{ $session['thumb'] }}" data-fallback="{{ $session['thumb_fallback'] }}" data-watch="{{ $session['watch'] }}" data-source="{{ $session['source'] }}" data-number="{{ $session['number'] ? '#'.str_pad($session['number'], 2, '0', STR_PAD_LEFT) : '' }}" @endif>
+            @if ($session['embed']) data-session-open data-embed="{{ $session['embed'] }}" data-title="{{ $session['title'] }}" data-page="{{ $session['url'] }}" data-thumb="{{ $session['thumb'] }}" data-fallback="{{ $session['thumb_fallback'] }}" data-watch="{{ $session['watch'] }}" data-source="{{ $session['source'] }}" @if ($session['portrait']) data-portrait @endif data-number="{{ $session['number'] ? '#'.str_pad($session['number'], 2, '0', STR_PAD_LEFT) : '' }}" @endif>
             <span class="w-28 flex-none overflow-hidden rounded sm:w-32">@include('partials.sessions.thumb', ['s' => $session])</span>
             <span class="min-w-0">
               <span class="block text-[11px] font-bold tracking-[0.14em] text-accent-dark uppercase">{{ __('Missed a gig?', 'jennylind') }}</span>

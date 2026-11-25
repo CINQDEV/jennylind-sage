@@ -476,6 +476,23 @@
 
   .session-modal iframe { @apply block h-full w-full border-0; }
 
+  .session-modal__frame {
+    @apply aspect-video w-full overflow-hidden rounded-md bg-black;
+  }
+
+  /* Instagram: the still stays 16:9 until play, then a tall portrait player */
+  .session-modal__frame.is-portrait:has(iframe) {
+    @apply mx-auto aspect-auto h-[min(78vh,760px)] w-[min(100%,420px)] bg-white;
+  }
+
+  .session-player--portrait:has(iframe) {
+    @apply mx-auto max-w-[420px] bg-white;
+  }
+
+  .session-player--portrait iframe {
+    @apply aspect-auto h-[min(78vh,760px)];
+  }
+
   .session-modal__close {
     @apply flex size-11 flex-none cursor-pointer items-center justify-center rounded-full border border-paper/40 bg-transparent text-paper hover:bg-paper hover:text-ink;
   }
