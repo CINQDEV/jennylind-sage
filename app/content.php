@@ -147,3 +147,18 @@ function menu_items(string $location): array
         'current' => (bool) array_intersect(['current-menu-item', 'current-menu-ancestor', 'current_page_item'], (array) $item->classes),
     ], array_filter($items, fn ($item) => ! $item->menu_item_parent)));
 }
+
+/**
+ * Opening hours, used in the footer, the homepage "Find us" and the Contact
+ * sidebar. Change them here.
+ *
+ * @return array<int, array{0: string, 1: string}>
+ */
+function opening_hours(): array
+{
+    return [
+        ['Mon–Wed', '1pm–11pm'],
+        ['Thu', '12pm–11pm'],
+        ['Fri–Sun', '12pm–12am'],
+    ];
+}
