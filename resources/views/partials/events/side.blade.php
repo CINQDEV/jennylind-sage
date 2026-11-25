@@ -11,3 +11,8 @@
   @endforeach
   <a class="link-underline mt-3 inline-block text-paper" href="{{ home_url('/whats-on/') }}">{{ __('Full listings', 'jennylind') }} →</a>
 </div>
+
+{{-- Not on a session's own page: it already links to all the sessions. --}}
+@unless (is_singular('jl_session'))
+  @include('partials.sessions.promo', ['class' => 'mt-6'])
+@endunless

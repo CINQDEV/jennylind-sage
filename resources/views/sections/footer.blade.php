@@ -20,6 +20,7 @@
       <div class="flex flex-col gap-2">
         <span class="footer-heading">{{ __('More', 'jennylind') }}</span>
         <a href="{{ home_url('/whats-on/') }}">{{ __("What's On", 'jennylind') }}</a>
+        <a href="{{ App\sessions_url() }}">{{ __('The Jenny Sessions', 'jennylind') }}</a>
         <a href="{{ home_url('/stay/') }}">{{ __('Rooms & booking', 'jennylind') }}</a>
         <a href="{{ home_url('/shanty/') }}">{{ __('Shanty songsheets', 'jennylind') }}</a>
         <a href="https://www.facebook.com/jennylindhastings/" target="_blank" rel="noopener">Facebook</a>
