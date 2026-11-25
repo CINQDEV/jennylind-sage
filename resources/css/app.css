@@ -142,7 +142,7 @@
 
   /* The logo plaque hangs below the bar on larger screens. */
   .site-header__logo {
-    @apply relative z-50 flex self-start justify-self-center no-underline;
+    @apply relative z-50 flex self-center justify-self-center no-underline lg:self-start;
   }
 
   .site-header__plaque {
