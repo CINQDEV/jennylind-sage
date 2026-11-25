@@ -118,3 +118,31 @@ add_action('init', function () {
     remove_filter('comment_text_rss', 'wp_staticize_emoji');
     remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 });
+
+/**
+ * Favicon and home-screen icons (JL monogram), from resources/favicon.
+ * Replaces WordPress's own Site Icon output so there's only one set.
+ */
+add_action('after_setup_theme', function () {
+    remove_action('wp_head', 'wp_site_icon', 99);
+    remove_action('login_head', 'wp_site_icon', 99);
+    remove_action('admin_head', 'wp_site_icon');
+});
+
+$jl_icons = function () {
+    $dir = get_theme_file_uri('resources/favicon');
+    echo '<link rel="icon" href="'.esc_url($dir.'/favicon.ico').'" sizes="32x32">'."\n";
+    echo '<link rel="icon" href="'.esc_url($dir.'/favicon.svg').'" type="image/svg+xml">'."\n";
+    echo '<link rel="apple-touch-icon" href="'.esc_url($dir.'/apple-touch-icon.png').'">'."\n";
+    echo '<link rel="manifest" href="'.esc_url($dir.'/site.webmanifest').'">'."\n";
+    echo '<meta name="theme-color" content="#15232E">'."\n";
+};
+add_action('wp_head', $jl_icons, 2);
+add_action('login_head', $jl_icons);
+add_action('admin_head', $jl_icons);
+
+// Browsers also ask for /favicon.ico directly.
+add_action('do_faviconico', function () {
+    wp_redirect(get_theme_file_uri('resources/favicon/favicon.ico'), 301);
+    exit;
+});
