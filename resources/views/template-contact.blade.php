@@ -23,16 +23,13 @@
       </div>
 
       <aside class="entry-content rounded-lg bg-sand p-6 md:p-8 lg:w-[38%] lg:self-start [&_h2]:mt-0 [&_h2:not(:first-child)]:mt-8 [&_h2]:text-[32px]">
+        {{-- Opening hours go straight after the first section (Address). --}}
+        @php(ob_start())
         @php(the_content())
-
-        <h2 class="mb-3">{{ __('Opening hours', 'jennylind') }}</h2>
-        <dl class="m-0 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1">
-          @foreach (App\opening_hours() as [$days, $hours])
-            <dt class="font-bold">{{ $days }}</dt>
-            <dd class="m-0">{{ $hours }}</dd>
-          @endforeach
-        </dl>
-        <p class="mt-2 mb-0 text-[15px] text-muted">{{ __('Under 18s welcome until 7pm', 'jennylind') }}</p>
+        @php([$before, $after] = App\split_after_first_section((string) ob_get_clean()))
+        {!! $before !!}
+        @include('partials.opening-hours')
+        {!! $after !!}
       </aside>
     </div>
   @endwhile

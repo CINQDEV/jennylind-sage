@@ -162,3 +162,17 @@ function opening_hours(): array
         ['Fri–Sun', '12pm–12am'],
     ];
 }
+
+/**
+ * Split page HTML just before its second <h2>, so something can be slotted in
+ * after the first section. No second heading: everything goes first.
+ *
+ * @return array{0: string, 1: string}
+ */
+function split_after_first_section(string $html): array
+{
+    $first = stripos($html, '<h2');
+    $second = $first === false ? false : stripos($html, '<h2', $first + 3);
+
+    return $second === false ? [$html, ''] : [substr($html, 0, $second), substr($html, $second)];
+}
