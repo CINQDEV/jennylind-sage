@@ -434,8 +434,13 @@
   .session-card:hover .session-card__title { @apply text-accent; }
 
   .session-promo {
-    @apply block overflow-hidden rounded-lg border border-card-line bg-white text-ink no-underline hover:text-ink;
+    @apply flex items-center gap-3 rounded-md border border-card-line bg-white p-2.5 text-ink no-underline transition-colors hover:border-ink hover:text-ink;
   }
+
+  .session-promo__thumb { @apply w-24 flex-none overflow-hidden rounded; }
+  .session-promo .session-thumb__play { @apply size-7; }
+  .session-promo .session-thumb__play svg { @apply size-3.5; }
+  .session-promo .session-thumb__num { display: none; }
 
   .session-feature {
     @apply flex flex-col overflow-hidden rounded-lg bg-white shadow-[0_20px_50px_rgba(21,35,46,0.25)] lg:flex-row;
