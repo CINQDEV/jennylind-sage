@@ -68,12 +68,15 @@
       @endforeach
     </div>
 
-    {{-- Every week (left half) + The Jenny Sessions (right half) --}}
-    <div class="weekly-panel lg:grid-cols-2">
+    {{-- Every week (left half) + The Jenny Sessions (right half): a quiet strip --}}
+    <div class="weekly-panel md:grid-cols-2">
       @if ($regulars)
-        <div class="flex flex-col p-5 md:p-8">
-          <h3 class="mt-0 mb-4 text-[30px] md:text-[36px]">{{ __('Every week', 'jennylind') }}</h3>
-          <ul class="m-0 flex list-none flex-col gap-2 p-0">
+        <div class="p-4 md:p-5">
+          <div class="mb-2 flex items-baseline justify-between gap-4">
+            <h3 class="m-0 text-[20px]">{{ __('Every week', 'jennylind') }}</h3>
+            <a class="text-[13px] text-muted underline decoration-1 underline-offset-4 hover:text-ink" href="{{ App\calendar_links()['webcal'] }}">{{ __('Add to calendar', 'jennylind') }}</a>
+          </div>
+          <ul class="m-0 list-none p-0">
             @foreach ($regulars as $night)
               <li>
                 <a class="weekly-night" href="{{ $night['url'] }}">
@@ -84,36 +87,33 @@
               </li>
             @endforeach
           </ul>
-          <p class="m-0 mt-auto flex flex-wrap gap-x-6 gap-y-2 pt-5 text-[14px]">
-            <a class="link-underline text-paper" href="{{ App\calendar_links()['webcal'] }}">{{ __('Add our gigs to your calendar', 'jennylind') }} →</a>
-            <a class="link-underline text-paper" href="{{ home_url('/shanty/') }}">{{ __('Shanty songsheets', 'jennylind') }} →</a>
-          </p>
         </div>
       @endif
 
-      <div class="weekly-panel__sessions flex flex-col">
-        <h3 class="mt-0 mb-4 text-[30px] md:text-[36px]">{{ __('The Jenny Sessions', 'jennylind') }}</h3>
+      <div class="weekly-panel__sessions">
+        <div class="mb-2 flex items-baseline justify-between gap-4">
+          <h3 class="m-0 text-[20px]">{{ __('The Jenny Sessions', 'jennylind') }}</h3>
+          <a class="text-[13px] text-muted underline decoration-1 underline-offset-4 hover:text-ink" href="{{ App\sessions_url() }}">{{ __('All sessions', 'jennylind') }}</a>
+        </div>
         @if ($session)
-          <a class="weekly-feature" href="{{ $session['url'] }}"
+          <a class="weekly-session" href="{{ $session['url'] }}"
             @if ($session['embed']) data-session-open data-embed="{{ $session['embed'] }}" data-title="{{ $session['title'] }}" data-page="{{ $session['url'] }}" data-thumb="{{ $session['thumb'] }}" data-fallback="{{ $session['thumb_fallback'] }}" data-watch="{{ $session['watch'] }}" data-source="{{ $session['source'] }}" data-number="{{ $session['number'] ? '#'.str_pad($session['number'], 2, '0', STR_PAD_LEFT) : '' }}" @endif>
-            @include('partials.sessions.thumb', ['s' => $session, 'size' => 'lg'])
-            <span class="weekly-feature__caption">
-              <span class="block text-[12px] font-bold tracking-[0.14em] text-blush uppercase">{{ __('Missed a gig?', 'jennylind') }}@if ($session['number']) · #{{ str_pad($session['number'], 2, '0', STR_PAD_LEFT) }}@endif</span>
-              <span class="mt-1 block font-display text-[22px] font-extrabold uppercase" style="line-height: 1.05">{{ $session['title'] }}</span>
-              @if ($session['date'])<span class="mt-1 block text-[13px] text-soft">{{ sprintf(__('Played %s', 'jennylind'), $session['date']) }}</span>@endif
+            <span class="w-28 flex-none overflow-hidden rounded sm:w-32">@include('partials.sessions.thumb', ['s' => $session])</span>
+            <span class="min-w-0">
+              <span class="block text-[11px] font-bold tracking-[0.14em] text-accent-dark uppercase">{{ __('Missed a gig?', 'jennylind') }}</span>
+              <span class="block font-display text-[17px] font-extrabold uppercase" style="line-height: 1.05">{{ $session['title'] }}</span>
+              @if ($session['date'])<span class="block text-[12px] text-muted">{{ sprintf(__('Played %s', 'jennylind'), $session['date']) }}</span>@endif
             </span>
           </a>
         @else
-          {{-- No sessions published yet: a teaser instead. --}}
-          <a class="weekly-teaser" href="{{ App\sessions_url() }}">
-            <img src="{{ Vite::asset('resources/images/bar-crowd.jpg') }}" alt="" loading="lazy">
-            <span class="weekly-teaser__body">
-              <span class="block text-[12px] font-bold tracking-[0.14em] text-blush uppercase">{{ __('Filmed live in the bar', 'jennylind') }}</span>
-              <span class="mt-1 block font-display text-[24px] font-extrabold uppercase" style="line-height: 1.05">{{ __('The best nights at the Jenny, on video', 'jennylind') }}</span>
+          <a class="weekly-session" href="{{ App\sessions_url() }}">
+            <span class="w-28 flex-none overflow-hidden rounded sm:w-32"><img class="block aspect-video w-full object-cover" src="{{ Vite::asset('resources/images/bar-crowd.jpg') }}" alt="" loading="lazy"></span>
+            <span class="min-w-0">
+              <span class="block text-[11px] font-bold tracking-[0.14em] text-accent-dark uppercase">{{ __('Filmed live in the bar', 'jennylind') }}</span>
+              <span class="block font-display text-[17px] font-extrabold uppercase" style="line-height: 1.05">{{ __('The best nights at the Jenny, on video', 'jennylind') }}</span>
             </span>
           </a>
         @endif
-        <a class="link-underline mt-auto inline-block self-start pt-4 text-[14px] text-paper" href="{{ App\sessions_url() }}">{{ __('Watch all the sessions', 'jennylind') }} →</a>
       </div>
     </div>
   </section>
